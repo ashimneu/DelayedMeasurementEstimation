@@ -1,21 +1,20 @@
 In this section, position estimation using a linear Kalman filter will be designed using a position, velocity, acceleration (PVA) state space model.
 
 \subsection{System Model}
-The state estimation algorithm (e.g. Kalman filter, RAPS) are designed using the standard state-space model:
+The state estimation algorithm are designed using the standard state-space model:
 \begin{align} \label{eqn:state_prop_model}
 	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k \\
 	\label{eqn:msr_update_model}
-	\Boldy_k &\doteq \BoldH \Boldx_k + \Boldeta_k	
+	\Boldy_k &\doteq \BoldH_k \Boldx_k + \Boldeta_k \\
+	\label{eqn:delayed_msr_update_model}
+	\Boldz_k &\doteq \BoldC_{k-N} \Boldx_{k-N} + \Boldeta_k	
 \end{align} 
 The rover state vector is 
 \begin{equation} \label{eqn:state_vector}
-	\Boldx = [\,\Boldp^\top \!\!\!, \, \Boldv^\top \!\!\!, \, \Bolda^\top \!\!\!, \, t_r, \, b_r]^\top 
+	\Boldx = [\,\Boldp^\top \!\!\!, \, \Boldv^\top \!\!\!, \, \Bolda^\top \!\!\!, \, N, \, b]^\top 
 	\in \mathbb{R}^{n_s}
-%	\begin{bmatrix}
-%		\Boldp^\top & \Boldv^\top & \Bolda^\top & t_r & b_r
-%	\end{bmatrix}^\top \in \mathbb{R}^{n_s}
 \end{equation}
-where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively. $t_r$, $b_r$ $\in \mathbb{R}$ are the receiver clock bias and clock drift, respectively. 
+where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively. $N$ is the delay time step of secondary measurement. $b$ is the secondary measurement bias. 
 Therefore, $n_s = 11$. $\BoldF \in \mathbb{R}^{n_s \times n_s}$ is the state transition matrix.
 $\Boldw_k \sim \mathcal{N}(\0,\,\BoldQ)$ is the process noise vector which is assumed to have a Gaussian distribution. $\BoldGamma \in \mathbb{R}^{n_s \times n_s}$ is the corresponding noise matrix. $\tau$ and $T$ are used to denote the time increments between successive state propagation and measurement update steps. 
 Since the propagation is done at higher rate compared to measurement update, $\tau \ll T$.
@@ -33,7 +32,7 @@ Similarly, $\BoldI_{a \times b}$ is an identity matrix with $a$ rows and $b$ col
 The state space model has the standard form described in eqns. (\ref{eqn:state_prop_model}-\ref{eqn:msr_update_model}). 
 The rover state vector is defined as
 $\Boldx_v = [\,\Boldp^\top \!\!\!\!,  \, \Boldv^\top \!\!\!\!, \, \Bolda^\top]^\top$ 
-and the receiver clock state vector is defined as $\Boldx_c = [\,t_r, \, b_r]^\top$.
+and the receiver clock state vector is defined as $\Boldx_c = [\,N, \, b]^\top$.
 The sub-components $\Boldx_v$ and $\Boldx_c$ propagate independently through time hence their respective components in the state space model are not coupled.
 The matrices of the discrete-time state-space model are
 \begin{align}
@@ -74,32 +73,3 @@ The corresponding discrete-time description of the PVA vehicle model is approxim
 	\end{bmatrix},
 \end{align}
 where $a_1 = \exp^{\lambda_a T}$, $a_2 = (1 - \exp^{-\lambda_a T})/ \lambda_a$, and $a_3 = (\lambda_a T - 1 + \exp^{-\lambda_a T})/ \lambda_a^2$.
-
-The continuous-time description of the clock model is 
-\begin{align}
-	\dot{\Boldx}_c(t) \doteq 
-	\begin{bmatrix}
-		0 & 1 \\ 0 & -\lambda_c
-	\end{bmatrix} 
-	\Boldx_c(t) +
-	\begin{bmatrix} 0 \\ 1 \end{bmatrix} \Boldw_c(t)
-\end{align}
-where $\Boldw_c(t)$ is modeled as Gaussian white noise with power spectral density $\BoldQ_c = \sigma_c^2$. 
-The corresponding discrete-time description of the clock model is 
-\begin{align}
-	& \BoldF_c = 
-	\begin{bmatrix}
-		1 & \beta_1 \\ 0 & \beta_2
-	\end{bmatrix}, ~
-	\BoldGamma_c \approx
-	\begin{bmatrix}
-		(T^3 / 3)^{\frac{1}{2}} & 0 \\
-		0 & \sqrt{T}
-	\end{bmatrix}, ~  
-	\BoldQ_{c} = 
-	\begin{bmatrix}
-		\sigma_{t_r}^2 & 0 \\ 0 & \sigma_{b_r}^2
-	\end{bmatrix}
-\end{align}
-where $\beta_1 = (1 - \exp^{-\lambda_c T})/ \lambda_c$ and $\beta_2 = \exp^{-\lambda_c T}$.
-The approximations in $\BoldGamma_v$ and $\BoldGamma_c$ yield the correct diagonal of the discrete-time noise covariance matrix but approximates the off-diagonal terms.

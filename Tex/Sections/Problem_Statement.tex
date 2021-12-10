@@ -28,15 +28,3 @@ where $\BoldH_k \in \mathbb{R}^{m \times n}$ is the measurement matrix and $\Bol
 } 
 which can be written as $\BoldR = \sum_{i=1}^{m} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
 The prior and measurement noise are independent.
-
-Some of the measurements will be affected by outliers.
-Outlier measurements are those that are very unlikely given the model stated in eqn. (\ref{eqn:MeasurementModel}). 
-When the $i$-th measurement is affected by an outlier, that measurement could be considered to be modeled by
-\begin{equation}\label{eqn:MeasurementModel_s}
-	y_i = \Boldh_i \, \Boldx + \eta_i +s_i,
-\end{equation} where $s_i$ represents the outlier and $\Boldh_i$ is the $i$-th row of $\BoldH_k$; however, 
-there is usually no known model for the outlier $s_i$.
-
-
-
-
