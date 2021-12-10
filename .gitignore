@@ -1,0 +1,7 @@
+
+*.aux
+*.log
+*.bbl
+*.blg
+*.gz
+Tex/estimation_with_delayed_msr.pdf
