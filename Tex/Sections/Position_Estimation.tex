@@ -1,0 +1,105 @@
+In this section, position estimation using a linear Kalman filter will be designed using a position, velocity, acceleration (PVA) state space model.
+
+\subsection{System Model}
+The state estimation algorithm (e.g. Kalman filter, RAPS) are designed using the standard state-space model:
+\begin{align} \label{eqn:state_prop_model}
+	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k \\
+	\label{eqn:msr_update_model}
+	\Boldy_k &\doteq \BoldH \Boldx_k + \Boldeta_k	
+\end{align} 
+The rover state vector is 
+\begin{equation} \label{eqn:state_vector}
+	\Boldx = [\,\Boldp^\top \!\!\!, \, \Boldv^\top \!\!\!, \, \Bolda^\top \!\!\!, \, t_r, \, b_r]^\top 
+	\in \mathbb{R}^{n_s}
+%	\begin{bmatrix}
+%		\Boldp^\top & \Boldv^\top & \Bolda^\top & t_r & b_r
+%	\end{bmatrix}^\top \in \mathbb{R}^{n_s}
+\end{equation}
+where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively. $t_r$, $b_r$ $\in \mathbb{R}$ are the receiver clock bias and clock drift, respectively. 
+Therefore, $n_s = 11$. $\BoldF \in \mathbb{R}^{n_s \times n_s}$ is the state transition matrix.
+$\Boldw_k \sim \mathcal{N}(\0,\,\BoldQ)$ is the process noise vector which is assumed to have a Gaussian distribution. $\BoldGamma \in \mathbb{R}^{n_s \times n_s}$ is the corresponding noise matrix. $\tau$ and $T$ are used to denote the time increments between successive state propagation and measurement update steps. 
+Since the propagation is done at higher rate compared to measurement update, $\tau \ll T$.
+When the GNSS pseudorange measurements are used the observation matrix $\BoldH$ is
+\begin{equation}
+	\BoldH = \begin{bmatrix}		
+		\mathbfcal{H} & \0_{m \times 3} & \0_{m \times 3} & \1_{m \times 1} & \0_{m \times 1} \\		
+	\end{bmatrix}
+\end{equation}
+where $\mathbfcal{H} = [\, \mathfrak{h}^1 \, \mathfrak{h}^2 \, \dots \, \mathfrak{h}^m ]^\top$ and each $\mathfrak{h}^s$ represent a line-of-sight unit vector between satellite $s$ and the rover GNSS antenna. 
+The symbols $\0_{a \times b}$ and $\1_{a \times b}$ are  matrices with all entries $0$ and $1$, respectively, and with $a$ rows and $b$ columns. 
+Similarly, $\BoldI_{a \times b}$ is an identity matrix with $a$ rows and $b$ columns.
+
+\subsection{Kalman Filter Design}
+The state space model has the standard form described in eqns. (\ref{eqn:state_prop_model}-\ref{eqn:msr_update_model}). 
+The rover state vector is defined as
+$\Boldx_v = [\,\Boldp^\top \!\!\!\!,  \, \Boldv^\top \!\!\!\!, \, \Bolda^\top]^\top$ 
+and the receiver clock state vector is defined as $\Boldx_c = [\,t_r, \, b_r]^\top$.
+The sub-components $\Boldx_v$ and $\Boldx_c$ propagate independently through time hence their respective components in the state space model are not coupled.
+The matrices of the discrete-time state-space model are
+\begin{align}
+	\BoldF = \begin{bmatrix} \BoldF_v & \0 \\ \0 & \BoldF_c \end{bmatrix}, ~
+	\BoldGamma = \begin{bmatrix} \BoldGamma_v & \0 \\ \0 & \BoldGamma_c	\end{bmatrix}, ~
+	\BoldQ = \begin{bmatrix} \BoldQ_v & \0 \\ \0 & \BoldQ_c \end{bmatrix}
+\end{align}
+%The time step of state propagation is defined as $T = 0.1$ seconds and the measurement update using GNSS pseudorange occur once every 1 second.
+
+The continuous-time PVA vehicle model is
+\begin{align}
+	\dot{\Boldx}_v(t) \doteq 
+	\begin{bmatrix}
+		\0 & \BoldI & \0 \\ \0 & \0 & \BoldI \\ \0 & \0 & -\lambda_a \BoldI
+	\end{bmatrix} 
+	\Boldx_v(t) +
+	\begin{bmatrix} \0 & \0 & \0 \\ \0 & \0 & \0 \\ \0 & \0 & \BoldI \end{bmatrix} \Boldw_a(t)
+\end{align}
+where $\Boldomega_a(t)$ is modeled as Gaussian white noise with power spectral density $\BoldP_a = \sigma^2_a$. 
+The corresponding discrete-time description of the PVA vehicle model is approximated as
+\begin{align}
+	\BoldF_v &= 
+	\begin{bmatrix}
+		\BoldI_{3 \times 3} & T\,\BoldI_{3 \times 3} & a_3 \, \BoldI_{3 \times 3} \\
+		\0_{3 \times 3} & \BoldI_{3 \times 3} & a_2 \, \BoldI_{3 \times 3} \\
+		\0_{3 \times 3} & \0_{3 \times 3} & a_1 \, \BoldI_{3 \times 3}
+	\end{bmatrix}, ~ \\
+	\BoldGamma_v &\approx
+	\begin{bmatrix}
+		\big(T^5/20 \big)^{\frac{1}{2}} \, \BoldI_{3 \times 3} & \0_{3 \times 3} & \0_{3 \times 3}\\
+		\0_{3 \times 3} & \big(T^3 / 3\big)^{\frac{1}{2}} \, \BoldI_{3 \times 3} & \0_{3 \times 3} \\
+		\0_{3 \times 3} & \0_{3 \times 3} & \sqrt{T} \, \BoldI_{3 \times 3}
+	\end{bmatrix}, \\ 
+	\BoldQ_{v} &= 
+	\begin{bmatrix} \0_{3 \times 3} & \0_{3 \times 3} & \0_{3 \times 3} \\ 
+					\0_{3 \times 3} & \0_{3 \times 3} & \0_{3 \times 3} \\
+		 			\0_{3 \times 3} & \0_{3 \times 3} & \sigma^2_a \, \BoldI_{3 \times 3} 
+	\end{bmatrix},
+\end{align}
+where $a_1 = \exp^{\lambda_a T}$, $a_2 = (1 - \exp^{-\lambda_a T})/ \lambda_a$, and $a_3 = (\lambda_a T - 1 + \exp^{-\lambda_a T})/ \lambda_a^2$.
+
+The continuous-time description of the clock model is 
+\begin{align}
+	\dot{\Boldx}_c(t) \doteq 
+	\begin{bmatrix}
+		0 & 1 \\ 0 & -\lambda_c
+	\end{bmatrix} 
+	\Boldx_c(t) +
+	\begin{bmatrix} 0 \\ 1 \end{bmatrix} \Boldw_c(t)
+\end{align}
+where $\Boldw_c(t)$ is modeled as Gaussian white noise with power spectral density $\BoldQ_c = \sigma_c^2$. 
+The corresponding discrete-time description of the clock model is 
+\begin{align}
+	& \BoldF_c = 
+	\begin{bmatrix}
+		1 & \beta_1 \\ 0 & \beta_2
+	\end{bmatrix}, ~
+	\BoldGamma_c \approx
+	\begin{bmatrix}
+		(T^3 / 3)^{\frac{1}{2}} & 0 \\
+		0 & \sqrt{T}
+	\end{bmatrix}, ~  
+	\BoldQ_{c} = 
+	\begin{bmatrix}
+		\sigma_{t_r}^2 & 0 \\ 0 & \sigma_{b_r}^2
+	\end{bmatrix}
+\end{align}
+where $\beta_1 = (1 - \exp^{-\lambda_c T})/ \lambda_c$ and $\beta_2 = \exp^{-\lambda_c T}$.
+The approximations in $\BoldGamma_v$ and $\BoldGamma_c$ yield the correct diagonal of the discrete-time noise covariance matrix but approximates the off-diagonal terms.

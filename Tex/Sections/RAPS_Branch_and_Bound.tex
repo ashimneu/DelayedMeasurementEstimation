@@ -1,0 +1,182 @@
+%\tikzset{
+%	treenode/.style = {align=center, inner sep=0pt, text centered,
+%		font=\sffamily},
+%	arn_n/.style = {treenode, circle, white, font=\sffamily\bfseries, draw=black,
+%		fill=black, text width=1.5em},% arbre rouge noir, noeud noir
+%	arn_r/.style = {treenode, circle, black, draw=black, 
+%		text width=1.5em, very thick},% arbre rouge noir, noeud rouge
+%	arn_x/.style = {treenode, rectangle, draw=black,
+%		minimum width=0.5em, minimum height=0.5em}% arbre rouge noir, nil
+%}
+%
+%%\begin{wrapfigure}{l}{8cm}
+%	\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 3cm/#1,
+%			level distance = 1.5cm}] 
+%		\node [arn_r] {$N_0$}	
+%		child{ node [arn_r] {$N_1$} 			
+%			edge from parent node[above left] {$b_{y_1} = 0$}
+%		}
+%		child{ node [arn_r] {$N_2$}
+%			child{ node [arn_r] {$N_3$} 
+%				edge from parent node[above left] {$b_{y_2} = 0$}
+%			}
+%			child{ node [arn_r] {$N_4$}
+%				edge from parent node[above right] {$b_{y_2} = 1$}
+%			}
+%			edge from parent node[above right] {$b_{y_1} = 1$}
+%		}; 
+%	\end{tikzpicture}
+%%	\caption{Branch \& Bound algorithm Tree}
+%%\end{wrapfigure}
+
+\begin{align} \label{prob:RAPS_cost_constraints}
+	\left.
+	\begin{array}{rl}
+		\text{P}_0: & \underset{\Boldb}{\text{min}} ~ C(\Boldb) \\ 
+		& \text{subject to:} \\
+		& \sum_{i=1}^m \sigma_i^{-2} b_{y_i} 
+		\Boldh_i^\top \circ \Boldh_i^\top \ge \Delta \Boldj \\
+		& b_i \in \{0,1\}
+	\end{array}
+	\right\}
+\end{align}
+where $\Delta \Boldj = diag(\BoldJ_l) - diag(\BoldJ^-)$ and $\Boldh_i^\top \circ \Boldh_i^\top$ represents the element-wise product of vector $\Boldh_i^\top$ with itself.
+The integer linear programming (ILP) problem P$_0$ consists of a cost function and $m$ inequality constraints that are linear in the binary selection variables $\Boldb_{\Boldy}$. When the integer constraint on $b_{y_i}$ is relaxed to an interval in real number line, i.e. $b_{y_i} \in [0,1]$, following linear programming (LP) problem is obtained:	
+\begin{align} \label{prob:RAPS_cost_constraints_relaxed2}
+	\left.
+	\begin{array}{rl}
+		^\text{r}\text{P}_{0}: &
+		\text{minimize} ~ \sum_{i=1}^m b_{y_i} r^2_i \sigma^{-2}_i \\ 
+		& \text{subject to:} \\
+		& \sum_{i=1}^m \sigma_i^{-2} b_{y_i} 
+		\Boldh_i^\top \circ \Boldh_i^\top \ge \Delta \Boldj \\
+		& b_{y_i} \in [0,1]
+	\end{array}
+	\right\}
+\end{align}
+
+The LP optimization problem in eqn. (\ref{prob:RAPS_cost_constraints_relaxed}) is can be easily solved using a simplex method. The feasibility set
+
+%\begin{wrapfigure}{l}{3.0cm}
+%	\begin{tikzpicture}[every node/.style={draw=black,thick,circle,inner sep=2pt}]
+%		\node[circle,draw](z){$N_0$}
+%		child{ 
+%			node[circle,draw]{$N_1$} 
+%			child{node[circle,draw] {$N_3$}} 
+%			child{node[circle,draw] {$N_4$}} 
+%		}
+%		child{ 
+%			node[circle,draw]{$N_2$}
+%			edge from parent node [above right]
+%			{$x$}
+%		};
+%	\end{tikzpicture}
+%	\caption*{B\&B Tree}
+%\end{wrapfigure}
+
+
+
+At each iteration of the Branch and Bound algorithm, $C^*$ and $\Boldb_{\Boldy}^*$  will be referred to as $incumbent~cost$ and $incumbent~solution$, respectively, and their initial values are assigned as $C^* = \infty$ and $\Boldb_{\Boldy}^*$ = [1,...,1]$^\top$. 
+A set of unexplored nodes is denoted by L. 
+Every node in the branch and bound tree corresponds to a binary integer programming (IP) problem and the root node corresponds to the IP problem in eqn. (\ref{prob:RAPS_cost_constraints}).
+
+\begin{enumerate}
+	\item A node is selected from the list of unexplored nodes L.
+	\item \label{step:BB_relaxed_constraint} The integer constraint on $b_{y_i}$ is relaxed to $b_{y_i} \in [0,1]$ which yields the corresponding relaxed constrained optimization problem:	
+	\begin{align} \label{prob:RAPS_cost_constraints_relaxed}
+		\left.
+		\begin{array}{rl}
+			\text{P}_{0r}: &
+			\text{minimize} ~ \sum_{i=1}^m b_{y_i} r^2_i \sigma^{-2}_i \\ 
+			& \text{subject to:} \\
+			& \sum_{i=1}^m \sigma_i^{-2} b_{y_i} 
+			\Boldh_i^\top \circ \Boldh_i^\top \ge \Delta \Boldj \\
+			& b_{y_i} \in [0,1]
+		\end{array}
+		\right\}
+	\end{align}
+	The optimization problem in eqn. (\ref{prob:RAPS_cost_constraints_relaxed}) is a linear programming problem which can be easily solved using a simplex method.
+	
+	\item \label{step:BB_branching} The solution to eqn. (\ref{prob:RAPS_cost_constraints_relaxed}) can consist of non-integer values for the variable $b_{y_i}$ which is unacceptable for the original integer problem in P$_0$. Among the non-integer variables, one of the $\{b_{y_i}\}_{i=1}^m$ is picked by a heuristic function. With  no loss of generality let $b_{y_1}$ be the variable picked by the heuristic function.
+	\item From the root node $N_0$ generate two child nodes, $N_1$ and $N_2$. Node $N_1$ consists same IP problem as the parent node $N_0$ but, $b_{y_1}$ = 1. On the other hand, node $N_2$ consists same IP problem as the parent node $N_0$ where, $b_{y_1}$ = 0.
+		
+	\item The unexplored children nodes $N_1$ and $N_2$ are added to the set L.
+	
+	\item  One of the unexplored nodes from set L is picked by using a predefined search strategy. Let the node $N_1$ be picked for further exploration by the algorithm.
+	
+	\item IP problem of the node $N_1$ is converted to a LP problem by relaxing the integer constraint by using the method described in Step (\ref{step:BB_relaxed_constraint}). 
+	Solution to the LP problem $\Boldb_{\text{LP}}$ is obtained and the corresponding cost $C_{\text{LP}}$ is computed.
+\end{enumerate}
+
+\begin{algorithm}[t]  
+	\setlength{\belowdisplayskip}{-5pt} 
+	\setlength{\belowdisplayshortskip}{-5pt}
+	\setlength{\abovedisplayskip}{0pt} 
+	\setlength{\abovedisplayshortskip}{-1pt}
+	\caption{Branch \& Bound Algorithm} 
+	\label{alg:RAPS_BnB}                   
+	\begin{algorithmic}[1] 
+		\Require $\BoldH$, $\BoldR$, $\BoldP$, $\hat{\Boldx}^-$.
+		\Ensure $\Boldb_{\Boldy}^*$, $C^*$.
+		\State Create a set of unexplored nodes, $L=\{\}$;
+		\State Add root node $N_0$ in set L;
+		\State Set $incumbent~cost$ $C^* = \infty$ 
+		\State Set $incumbent~solution$ $\Boldb_{\Boldy}^*$ = [1,..,1]$^\top$.
+		\While{set of unexplored nodes L $\ne$ \{\}}
+		\State Use a search strategy to select a node $N_j$ from L.
+		\State Remove node $N_j$ from L and assign it as active node; 
+		\State Get corresponding problem P$_j$;
+		\State For ILP problem P$_j$ get the relaxed problem $^\text{r}$P$_{j}$;
+		\State Solve $^\text{r}$P$_{j}$ using LP solver such as simplex method;
+		\State Let $C_{\text{LP}}$ and $\Boldb_{\text{LP}}$ denote cost and solution of $^\text{r}$P$_{j}$;
+		\Statex \quad\quad \textit{Case 1.} If $C_{\text{LP}} \ge $ $C^*$ prune current node $N_j$.
+		\Statex \quad\quad \textit{Case 2.} If $C_{\text{LP}} < $ $C^*$ and $\Boldb_{\text{LP}}$ is feasible for ILP problem
+		\Statex $~~~~~~~~~~~~~~~~$ P$_j$ then $C^*$ = $C_{\text{LP}}$ and $\Boldb_y^*$ = $\Boldb_{\text{LP}}$; Prune $N_j$;
+		\Statex \quad\quad \textit{Case 3.} If $C_{\text{LP}} < $ $C^*$ and $\Boldb_{\text{LP}}$ is infeasible for P$_j$ then 
+		\Statex \qquad \qquad \qquad branch at nodes $N_j$ and add its children nodes  
+		\Statex \qquad \qquad \qquad to set L;
+
+		\EndWhile 		
+	\end{algorithmic}
+\end{algorithm}
+
+\newpage
+\noindent
+{\textit{Proof}}\\
+The minimization of the cost $C(\Boldx,\Boldb_{\Boldy})$ given in eqn. (\ref{eqn:RAPS_cost_linearb}) constrained by the linear inequalities in eqn. (\ref{eqn:RAPS_linear_constraint}) can be accomplished iteratively. 
+Each iteration, $\ell$, consists of two parts.
+
+\textit{Part 1}
+In the first part, $C(\Boldx,\Boldb_{\Boldy})$ is minimized with respect to $\Boldb_{\Boldy}$ while fixing the value of $\Boldx$ to its estimate from the preceding iteration, i.e. $\Boldx = \hat{\Boldx}^{\ell-1}$. 
+For $\ell = 1$, $\Boldx$ is fixed to the state prior $\hat{\Boldx}^-$.
+After the binary constrained on $b_i$ is relaxed, the corresponding minimization problem can be represented as
+\begin{align} \label{prob:RAPS_cost_constraints_relaxed3}
+	\left.
+	\begin{array}{rl}
+		^\text{r}\text{P}_{\ell}: &
+		\norm{ \Boldx^{\ell-1} - \hat{\Boldx}^-}_{\BoldP}^2 
+		+   \sum_{i=1}^{m} \frac{b_{y_i}}{\sigma_i^2} (\Boldh_i 
+		\Boldx^{\ell} - y_i)^2 \\ 
+		& \text{subject to:} \\
+		& \sum_{i=1}^m \sigma_i^{-2} b_{y_i} 
+		\Boldh_i^\top \circ \Boldh_i^\top \ge \Delta \Boldj \\
+		& b_{y_i} \in [0,1]
+	\end{array}
+	\right\}
+\end{align}
+
+The problem in eqn. (\ref{prob:RAPS_cost_constraints_relaxed3}) consists of cost and constraints that are linear in $\Boldb_{\Boldy}$ therefore it can be minimized using the branch and bound search approach described in Algorithm (\ref{alg:RAPS_BnB}). This yields the  cost $C(\Boldx^{\ell-1},\Boldb^{\ell}_{\Boldy})$ and a binary selection vector, $\Boldb^{\ell}_{\Boldy}$, which is integer feasible.
+
+\textit{Part 2}
+The newly found selection vector $\Boldb^{\ell}_{\Boldy}$ is substituted in the cost which is then minimized with respect to $\Boldx$. 
+This yields the solution $\hat{\Boldx}^{\ell}$ and the minimum $C(\hat{\Boldx}^{\ell},\Boldb^{\ell}_{\Boldy})$. 
+$\hat{\Boldx}^{\ell}$ is equivalent to the solution of eqn. (\ref{eqn:KF_info_msr_selected}) when $\BoldPhi(\Boldb_{\Boldx}) = \BoldI$ and $\Boldb_{\Boldy} = \Boldb^{\ell}_{\Boldy}$. 
+Note that $C(\hat{\Boldx}^{\ell},\Boldb^{\ell}_{\Boldy}) \le C(\hat{\Boldx}^{\ell-1},\Boldb^{\ell}_{\Boldy})$ because $\hat{\Boldx}^{\ell}$ yields the lowest possible cost when $\Boldb_{\Boldy}$ is fixed to $\Boldb^{\ell}_{\Boldy}$.
+$\hat{\Boldx}^{\ell}$ is substituted into the cost for the minimization described in the \textit{Part 1} for the iteration $\ell+1$.
+
+\noindent
+The iteration is stopped when $\Boldb^{\ell}_{\Boldy} = \Boldb^{\ell-1}_{\Boldy}$ since the cost cannot be further minimized.
+
+\clearpage
+
+

@@ -1,0 +1,24 @@
+Under the assumption that all measurements are devoid of outliers, the MAP approach chooses the state estimate $\Boldx$ to maximize the conditional probability density (see \cite{mendel1995lessons}):
+\begin{equation} \label{eqn:MAPsolution}
+	\hat{\Boldx}_k = \underset{\Boldx_k}{\text{argmax}} \; p(\Boldx_k|\Boldy_k) = \underset{\Boldx_k}{\text{argmax}} \; p(\Boldy_k|\Boldx_k)p(\Boldx_k) 
+\end{equation}
+Minimizing the negative log-likelihood, using the assumption that the prior and noise are Gaussian, yields the cost function:
+\begin{flalign}
+\hat{\Boldx}_k &= \underset{\Boldx_k}{\text{argmin}} \; 
+\Big[(\Boldy_k - \BoldH_k \, \Boldx_k)^\top \BoldR^{-1} (\Boldy_k - \BoldH_k \, \Boldx_k) \nonumber\\
+	&~~~~~~~~~~~~~~~~~ + (\Boldx_k - \hat{\Boldx}_k^-)^\top  (\BoldP_k^-)^{-1} (\Boldx_k - \hat{\Boldx}_k^-)\Big] \nonumber 
+\\ 
+\hat{\Boldx}_k &= \underset{\Boldx_k}{\text{argmin}} \norm{\BoldSigma_{\BoldR} \, (\Boldy_k-\BoldH_k \, \Boldx_k)}_{2}^{2} + \norm{\BoldSigma_{\BoldP} \, (\Boldx_k-\hat{\Boldx}_k^-)}_{2}^{2}  
+\label{eqn:MAP_LS}
+\end{flalign}
+where 
+${\BoldSigma_{\BoldR}}^\top \, \BoldSigma_{\BoldR} = \BoldR^{-1} $ and ${\BoldSigma_{\BoldP}}^\top \, \BoldSigma_{\BoldP} = (\BoldP_k^-)^{-1} $.
+Solving  eqn. (\ref{eqn:MAP_LS}) for $\Boldx$, yields the estimate 
+\begin{equation}\label{eqn:KF_info}
+ 	\hat{\Boldx}_k = 
+ 	\left(\BoldH_k^\top\, \BoldR^{-1} \BoldH_k + (\BoldP_k^-)^{-1}\right)^{-1}
+ 	\left(\BoldH_k^\top \, \BoldR^{-1} \Boldy_k + (\BoldP_k^-)^{-1} \hat{\Boldx}_k^-\right)
+\end{equation}
+which is the Kalman filter measurement update in Information Form, when all the measurements are used. 
+In this expression, $\BoldJ^+ = \BoldH^\top\, \BoldR^{-1} \BoldH + \BoldP^{-1}$ is the {\em information matrix} and $\BoldP^+ = \left( \BoldJ^+ \right)^{-1}$ is the {\em posterior error covariance matrix}.
+

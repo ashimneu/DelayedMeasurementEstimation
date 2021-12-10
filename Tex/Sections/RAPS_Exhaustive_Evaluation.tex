@@ -1,0 +1,22 @@
+\begin{enumerate}
+	\item \textit{Find binary vectors} \\
+	Let $M =  \{ b | \ \ J_{b}^+ \ge J_l \}$ be a set of all binary vectors $b$ that meet the constraint in (\ref{eqn:P_two}b). 
+	\begin{enumerate}
+		\item Let $s \in \mathbb{N}$, $0 \le s \le m$ and $n(b) \triangleq (m - \norm{b}_1)$ be total number of zeros in a binary vector $b$. Define a prospective binary vector $b_{sl}$ such that its $l^{th}$ component has value 0 and it satisfies $n(b_{sl}) = s$. 
+		Then, define $M_s$ to be a set that consists of all binary vectors $b_{sl} \in \mathbb{R}^m$ that have $s$ components with value 0. 
+		Essentially, for an arbitrary $b_{sl} \in M_s$, all other vectors in $N_s$ are the vectors with identical elements as $b_{sl}$ but with unique permutation of sequence of the elements. 
+		To illustrate, for $m = 3$, vectors $b_{11} = (0,1,1)^\top$ and $b_{13} = (1,1,0)^\top$ have identical number of $1s$ and $0s$ but elements differently arranged in the sequence, and both belong to the set $M_1$.
+		
+		\item Begin with $M_0$ which only has a vector $b_{00} \in \mathbb{R}^m$ such that $b_{00} = (1,.....,1)^\top$. 
+		Change exactly one of the $1$s to $0$ in $b_{00}$ to have an initial vector that belongs to $M_1$. Generate all other unique vectors of $M_1$ by permuting the elements of the initial vector. 
+		Next, pick only one of $b \in M_1$ and change exactly one of its $1$s to generate all vectors for new set $M_2$. 
+		Repeat this step for all sets $M_s$, for $0 \le s \le (m-1)$.
+		
+		\item Let $M = {\cup}^{m-1}_{s = 0} M_s$ be larger sets formed by taking union of the sets $M_s$ generated in step (1\textit{b}).
+	\end{enumerate}
+
+	\item \textit{Risk Minimization} \\
+	For each $b^l \in M,$ solve the least square optimization in (\ref{eqn:P_two}), and define $c^l = C(\hat{x}^, b^l)$. If $c^l < c^*,$ set $c^* =  c^l, \ \ \hat{x}^* = \hat{x}$, and $b^* = b^l$. 
+	Here, $\hat{x}^*$ is the best estimate of the parameter $x$ one can compute using RAPS approach for MAP estimation.
+
+\end{enumerate}

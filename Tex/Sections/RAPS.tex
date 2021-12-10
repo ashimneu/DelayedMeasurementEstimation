@@ -1,0 +1,42 @@
+Risk-Averse Performance-Specified (RAPS) estimation method finds an optimal (i.e.,  minimum risk) subset of measurements that satisfies an accuracy specification (see \cite{aghapour2018outlier}). The specification on the solution is achieved by placing a constraint on the posterior posterior information matrix in an optimization framework 
+
+The optimization problem is written as:
+\begin{equation} \label{eqn:RAPS_Problem}
+	\left.
+	\begin{array}{r}
+	\hat{\Boldx}, \Boldb  = \underset{\Boldx,\Boldb}{\text{argmin}} ~ C(\Boldx,\Boldb)  \\ 
+	\text{subject to:} \ \ \BoldJ_{b}^+ \ge \BoldJ_l 
+	\end{array}
+	\right\}
+\end{equation}
+where the cost $C(\Boldx,\Boldb)$ is defined in eqn (\ref{eqn:Costfcn}).
+Since the information matrix arises naturally in the MAP solution the information form of the performance constraint is used (see eqn. (\ref{eqn:PosteriorInfoMatrix})).
+
+RAPS interprets the cost $C(\Boldx,\Boldb)$ as the risk associated with the choice of measurements dictated by $\Boldb$.
+This interpretation is based on the cost function having two terms.
+The second term quantifies how well the optimal estimate matches the prior.
+The first term quantifies the size of each measurement residual relative to its covariance in $\BoldR$, which is related to the risk of including each residual in the optimization.
+RAPS optimizes over both the choice of measurements to include (i.e., $\Boldb_\Boldy$)  and of parameter estimate (i.e., $\Boldx$), subject to the performance constraint $\BoldJ_{b}^+ \ge \BoldJ_l$, where $\BoldJ_l$ is a positive semidefinite user-defined minimum accuracy specification. 
+
+If $\BoldJ_l$ is a diagonal matrix, the optimization constraint $\BoldJ_{b}^+ \ge \BoldJ_l$ can be manipulated (see Section V-A in \cite{aghapour2019}) to obtain
+\begin{equation} \label{eqn:RAPS_linear_constraint}
+	\sum_{i=1}^{m} \frac{b_{y_i}}{\sigma_i^2} 
+	\begin{bmatrix} h_{i1}^2 \\ \vdots \\ h_{in}^2	\end{bmatrix} 
+	+ ~ diag(\BoldJ^{-})  \ge diag(\BoldJ_l).
+\end{equation}
+Eqn. (\ref{eqn:RAPS_linear_constraint}) consists of $n$ inequality constraints that are each linear in $\Boldb_{\Boldy}$ and no longer involves search through matrices for feasible solutions.
+However, getting the optimal value still requires searching through $2^m$ possible solutions in the feasible set.
+
+Since each element of $\Boldb$ is binary, $b_i^2=b_i$; therefore, the cost function can be written as
+\begin{equation} \label{eqn:RAPS_cost_linearb}
+	C(\Boldx,\Boldb) = \norm{ \Boldx - \hat{\Boldx}^-}_{\BoldP}^2 
+	+   \sum_{i=1}^{m} \frac{b_{y_i}}{\sigma_i^2} (\Boldh_i \Boldx- y_i)^2 
+\end{equation}
+When $\Boldx$ is set to a fixed value, solving for optimal measurement selection vector $\Boldb$ is now only concerned with the minimization of risk introduced by the measurements. 
+Therefore, ${\Vert \Boldx - \mu_{\Boldx} \Vert }^2_{\BoldP}$ term is dropped from the cost when getting the optimal measurement selection vector $\Boldb_{\Boldy}$. 
+Eqn. (\ref{eqn:RAPS_cost_linearb}) consists of $m$ measurements that is linear in $\Boldb_{\Boldy}$.
+
+Eqn. (\ref{eqn:RAPS_linear_constraint}) and eqn. (\ref{eqn:RAPS_cost_linearb}) consist of $m$ measurements and $n$ constraints, respectively, that are both linear in $\Boldb_{\Boldy}$. 
+The linear form allows the constrained optimization problem to be solved using Brand and Bound method as opposed to solving through exhaustive search through $2^m$ possible solutions for $\Boldb_{\Boldy}$. 
+Branch and Bound \cite{landautomatic,lawler1966branch} is a computationally efficient algorithm that can be used to find a global optimal solution for binary constrained optimization problem of eqn. (\ref{eqn:RAPS_Problem}). 
+{\color{green} Its computational cost is O$(m)$.}
