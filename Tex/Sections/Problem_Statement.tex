@@ -3,28 +3,45 @@
 %While this article includes a linearized time propagation for the completeness of the estimation process, the prime focus shall be on the measurement update portion. 
 
 Recursive Bayesian estimation consists of time propagation for prediction of the state and measurement update to correct the predicted state.
-When there is delay in the time a sensor provides a measurement and the time it is made available for the measurement update, the estimation process need to be address the delay before incorporating the measurement into the update.
-This article describes an approach to address the delay for a discrete-time estimation model.
 
-Let $\Boldx_k \in\mathbb{R}^n$ represent the state vector at discrete-time $k$.
-The measurement update at time $k$ involves a state prior and a measurement vector $\Boldy_k\in\mathbb{R}^m$.
-%
-The prior for the state $\Boldx_k$ is modeled as a Gaussian probability distribution $\Boldx_k \sim \mathcal{N}(\hat{\Boldx}_k^-,\BoldP_k^-)$, where the mean $\hat{\Boldx}_k^-$ and error covariance matrix $\BoldP_k^-$ are provided by the time propagation step.
-  
-The delayed measurement vector at time $k$ is:
-\begin{align} \label{eqn:MeasurementModel}
-	\Boldz_{k} = \BoldC_{k-N} \, \Boldx_{k-N} + \Boldeta_k
+The time propagation model can be represented as
+\begin{equation}
+	\Boldx_{k+1} = \Boldf(\Boldx_k, \Boldu_k) + \Boldw_k
+\end{equation}
+where $\Boldx_k \in\mathbb{R}^n$ represents the state vector at discrete-time $k$, $\Boldu_k$ is the control input and $\Boldw_k$ is zero-mean, white, Gaussian process noise with covariance matrx $\BoldQ_k$. $\Boldf (\cdot)$ represents the relation for propagation of the system between successive time steps.
+The measurement models are represented as
+\begin{align} 
+	\label{eqn:DelayedMeasurementModel}
+	\Boldz_{k} &= \Boldc (\Boldx_{k-N}, b_k) + \Boldzeta_k \\
+	\label{eqn:UndelayedMeasurementModel}
+	\Boldy_{k} &= \Boldh (\Boldx_{k}) + \Boldeta_k,
+%	\Boldz_{k} = \BoldC_{k-N} \, \Boldx_{k-N} + \Boldzeta_k
 \end{align}
-where $N$ is delay time steps, $\BoldC_{k-N}\in \mathbb{R}^{m \times n}$ is the measurement matrix and $\Boldeta_k \sim \mathcal{N}(\0,\,\BoldR)$ is white Gaussian measurement noise.
-
-The undelayed measurement vector at time $k$ is:
-\begin{align} \label{eqn:MeasurementModel}
-\Boldy_k = \BoldH_k \, \Boldx_k + \Boldeta_k
-\end{align}
-where $\BoldH_k \in \mathbb{R}^{m \times n}$ is the measurement matrix and $\Boldeta_k \sim \mathcal{N}(\0,\,\BoldR)$ is white Gaussian measurement noise. The covariance matrix $\BoldR$ is assumed to be invertible and diagonal\footnote
+where $\Boldz_k$ is a vector of delayed measurements, $\Boldy_k$ is a vector of measurements unaffected by any delay and $N$ is the number of time steps $\Boldz_k$ is delayed by. 
+$\Boldc(\cdot)$ and $\Boldh(\cdot)$ represent the relation between the system state and the measurements $\Boldz$ and $\Boldy$, respectively.
+$b_k$ represents the uncertain sensor bias affecting measurement $\Boldz_k$.
+$\Boldzeta_k$ and $\Boldeta_k$ are zero-mean, white, Gaussian measurement noises with covariance matrices $\BoldR_k$ and $\BoldSigma_k$, respectively.
+The covariance matrices $\BoldSigma$ and $\BoldR$ are assumed to be invertible and diagonal\footnote
 {\label{ftnt:R_assumption}
 	Note that there is no restriction attached to this assumption. The solution can be used for any  covariance matrix by using the transformation $\Boldy' =\BoldSigma_R  \, \Boldy$ with $\BoldR^{-1} = \BoldSigma_R \, \BoldSigma_R^\top$, the measurement model for $\Boldy'$ is:
 	$$\Boldy'=\BoldH' \,\Boldx+\Boldeta' \mbox{ where } \BoldH' = \Sigma_R  \, \BoldH \mbox{ , } \Boldeta' \sim \mathcal{N}(\0,\,\BoldI).$$
 } 
-which can be written as $\BoldR = \sum_{i=1}^{m} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
+which can be written as $\BoldSigma = \sum_{i=1}^{m_d} \rho_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$ and $\BoldR = \sum_{i=1}^{m_u} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, respectively, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
 The prior and measurement noise are independent.
+
+The linear form of the time propagation model of eqn.(\ref{eqn:state_prop_model}) can be represented as
+\begin{align}
+	\label{eqn:state_prop_model}
+	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k.
+\end{align}
+The linear representations of the measurement models of eqns. (\ref{eqn:DelayedMeasurementModel}) and (\ref{eqn:UndelayedMeasurementModel}) are
+\begin{align}
+	\label{eqn:eqn:LinearDelayedMeasurementModel}
+	\Boldz_k &\doteq \BoldC_{k-N} \Boldx_{k-N} + \Boldeta_k \\
+	\label{eqn:LinearUndelayedMeasurementModel}
+	\Boldy_k &\doteq \BoldH_k \Boldx_k + \Boldeta_k,
+\end{align}
+where $\BoldC_{k-N} \in \mathbb{R}^{m_d \times n}$ is the measurement matrix that relates the delayed measurement $\Boldz_{k}$ to the state at time $k-N$, i.e. $\Boldx_{k-N}$. 
+$\BoldH_k\in \mathbb{R}^{m_u \times n}$ is the measurement matrix that relates undelayed measurement $\Boldz_k$ to the state at time $k$, i.e. $\Boldx_k$ .
+
+The measurement update at time $k$ involves a state prior which is modeled as a Gaussian probability distribution $\Boldx_k \sim \mathcal{N}(\hat{\Boldx}_k^-,\BoldP_k^-)$, where the mean $\hat{\Boldx}_k^-$ and error covariance matrix $\BoldP_k^-$ are provided by the time propagation step.

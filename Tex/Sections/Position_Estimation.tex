@@ -4,10 +4,10 @@ In this section, position estimation using a linear Kalman filter will be design
 The state estimation algorithm are designed using the standard state-space model:
 \begin{align} \label{eqn:state_prop_model}
 	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k \\
-	\label{eqn:msr_update_model}
-	\Boldy_k &\doteq \BoldH_k \Boldx_k + \Boldeta_k \\
 	\label{eqn:delayed_msr_update_model}
-	\Boldz_k &\doteq \BoldC_{k-N} \Boldx_{k-N} + \Boldeta_k	
+	\Boldz_k &\doteq \BoldC_{k-N} \Boldx_{k-N} + \Boldeta_k	\\
+	\label{eqn:msr_update_model}
+	\Boldy_k &\doteq \BoldH_k \Boldx_k + \Boldeta_k	
 \end{align} 
 The rover state vector is 
 \begin{equation} \label{eqn:state_vector}
@@ -18,15 +18,6 @@ where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover positi
 Therefore, $n_s = 11$. $\BoldF \in \mathbb{R}^{n_s \times n_s}$ is the state transition matrix.
 $\Boldw_k \sim \mathcal{N}(\0,\,\BoldQ)$ is the process noise vector which is assumed to have a Gaussian distribution. $\BoldGamma \in \mathbb{R}^{n_s \times n_s}$ is the corresponding noise matrix. $\tau$ and $T$ are used to denote the time increments between successive state propagation and measurement update steps. 
 Since the propagation is done at higher rate compared to measurement update, $\tau \ll T$.
-When the GNSS pseudorange measurements are used the observation matrix $\BoldH$ is
-\begin{equation}
-	\BoldH = \begin{bmatrix}		
-		\mathbfcal{H} & \0_{m \times 3} & \0_{m \times 3} & \1_{m \times 1} & \0_{m \times 1} \\		
-	\end{bmatrix}
-\end{equation}
-where $\mathbfcal{H} = [\, \mathfrak{h}^1 \, \mathfrak{h}^2 \, \dots \, \mathfrak{h}^m ]^\top$ and each $\mathfrak{h}^s$ represent a line-of-sight unit vector between satellite $s$ and the rover GNSS antenna. 
-The symbols $\0_{a \times b}$ and $\1_{a \times b}$ are  matrices with all entries $0$ and $1$, respectively, and with $a$ rows and $b$ columns. 
-Similarly, $\BoldI_{a \times b}$ is an identity matrix with $a$ rows and $b$ columns.
 
 \subsection{Kalman Filter Design}
 The state space model has the standard form described in eqns. (\ref{eqn:state_prop_model}-\ref{eqn:msr_update_model}). 
