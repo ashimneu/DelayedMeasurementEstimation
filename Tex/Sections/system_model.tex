@@ -1,0 +1,18 @@
+The state estimation algorithm are designed using the standard state-space model:
+\begin{align} \label{eqn:state_prop_model}
+	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k \\
+	\label{eqn:delayed_msr_update_model}
+	\Boldz_k &\doteq \BoldC_{k-N} \Boldx_{k-N} + \Boldeta_k	\\
+	\label{eqn:msr_update_model}
+	\Boldy_k &\doteq \BoldH_k \Boldx_k + \Boldeta_k	
+\end{align} 
+The rover state vector is 
+\begin{equation} \label{eqn:state_vector}
+	\Boldx = [\,\Boldp^\top \!\!\!, \, \Boldv^\top \!\!\!, \, \Bolda^\top \!\!\!, \, N, \, b]^\top 
+	\in \mathbb{R}^{n_s}
+\end{equation}
+where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively. $N$ is the delay time step of secondary measurement. $b$ is the secondary measurement bias. 
+Therefore, $n_s = 11$. $\BoldF \in \mathbb{R}^{n_s \times n_s}$ is the state transition matrix.
+$\Boldw_k \sim \mathcal{N}(\0,\,\BoldQ)$ is the process noise vector which is assumed to have a Gaussian distribution. $\BoldGamma \in \mathbb{R}^{n_s \times n_s}$ is the corresponding noise matrix. $\tau$ and $T$ are used to denote the time increments between successive state propagation and measurement update steps. 
+Since the propagation is done at higher rate compared to measurement update, $\tau \ll T$.
+

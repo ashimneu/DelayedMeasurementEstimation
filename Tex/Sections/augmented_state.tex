@@ -1,0 +1,43 @@
+The uncertain delay parameter $N$ and the measurement bias parameter $b$ are unknown. To estimate them, the state vector is augmented with these unknown parameters and augmented state is defined as
+\begin{align}
+	\tilde{\Boldx}(t) =
+	\begin{bmatrix}
+		\Boldx(t) \\ N(t) \\ b(t)
+	\end{bmatrix} 
+\end{align}
+To model the time varying delay parameter $N$, its dynamics is defined as $\dot{N}(t) = \vartheta(t)$, where $\vartheta(t)$ is a white Gaussian noise. 
+
+The system model can be represented as
+\begin{align}
+	\dot{\tilde{\Boldx}}(t) &= 
+	\tilde{\Boldf} \, \Big( \tilde{\Boldx}(t), \Boldu(t) \Big) + \Boldpsi(t)\\
+	\begin{bmatrix}
+		\dot{\Boldx}(t) \\ \dot{N}(t) \\ \dot{b}(t)
+	\end{bmatrix} &= 
+	\begin{bmatrix}
+		\Boldf \Big( \big[\, \BoldI \ \ 0 \ \ 0 \big] \,\tilde{\Boldx}(t), \Boldu(t) \Big) + \Boldomega(t) \\ \vartheta(t) \\ \varphi(t)
+	\end{bmatrix} \nonumber
+\end{align}
+where $\Boldpsi(t) = \begin{bmatrix} \Boldomega(t)^\top & \vartheta(t) & \varphi(t). \end{bmatrix}^\top$
+
+The discrete-time measurement models in eqns.(\ref{eqn:LinearDelayedMeasurementModel}) \& (\ref{eqn:LinearUndelayedMeasurementModel}) can be rewritten as
+\begin{align} 
+	\label{eqn:DelayedMeasurementModelAug}
+	\Boldz(t) &= \Boldc \Big( \tilde{\Boldx}(t) \Big) + \Boldzeta(t) \\
+	\label{eqn:UndelayedMeasurementModelAug}
+	\Boldy(t) &= \Boldh \Big( \big[\, \BoldI \ \ 0 \ \ 0 \big] \,\tilde{\Boldx}(t) \Big) + \Boldeta(t).
+\end{align}
+
+\begin{align}
+	content...
+\end{align}
+
+%\begin{align}
+%	\dot{{\tilde{\Boldx}(t)} = 
+%	\begin{bmatrix} 
+%		\dot{\Boldx}(t) \\ \dot{b}(t) 
+%	\end{bmatrix} = 
+%	\begin{bmatrix} 
+%		\Boldf(\Boldx(t),\Boldu(t)) + \Boldw(t) \\ \nu(t) 
+%	\end{bmatrix}
+%\end{align}

@@ -1,38 +1,36 @@
-\newline \newline
-\textit{1. Kalman Filter Propagation}\\
+\noindent
+\textit{1. Kalman Filter Propagation}
+
 The state vector estimate $\hat{\Boldx}$ has propagation relation
 \begin{equation}
 	\hat{\Boldx}_{k}^- = \BoldF \, \hat{\Boldx}_{k-1}^+.
 \end{equation}
 
-\noindent
 The state covariance matrix estimate $\BoldP$ has propagation relation
 \begin{equation}
 	\BoldP_{k}^- = \BoldF \, \BoldP_{k-1}^+ \BoldF^\top + \BoldGamma \BoldQ \BoldGamma^\top.
 \end{equation}
 
 \noindent
-\textit{2. Kalman Filter Measurement Update} \\
+\textit{2. Kalman Filter Measurement Update}
+
 Innovation Covariance is 
 \begin{equation}
-	\BoldS_k = \BoldH_k \, \BoldP^-_k \BoldH_k^\top + \BoldR
+	\BoldS_k = \BoldC_k \, \BoldP^-_k \BoldC_k^\top + \BoldR
 \end{equation}
 
 Optimal Kalman Gain is
 \begin{align}
-	\BoldK_k &= \BoldP_k^- \BoldH_k^\top \BoldS_k^{-1} \nonumber \\
-	\BoldK_k &= \BoldP_k^- \BoldH_k^\top (\BoldH_k \, \BoldP_k^- \BoldH_k^\top + \BoldR)^{-1}
+	\BoldK_k &= \BoldP_k^- \BoldC_k^\top \BoldS_k^{-1} \nonumber \\
+	\BoldK_k &= \BoldP_k^- \BoldC_k^\top (\BoldC_k \, \BoldP_k^- \BoldC_k^\top + \BoldR)^{-1}
 \end{align}
 
 The posterior state estimate is
 \begin{align}
-	\hat{\Boldx}_k^+ &= \hat{\Boldx}_k^- + \BoldK_k \, (\Boldy_k - \BoldH_k \hat{\Boldx}_k^-) \nonumber \\
-	\hat{\Boldx}_k^+ &= \hat{\Boldx}_k^- + \BoldP_k^- \BoldH_k^\top (\BoldH_k \, \BoldP_k^- \BoldH_k^\top + \BoldR)^{-1} (\Boldy_k - \BoldH_k \hat{\Boldx}_k^-)
+	\hat{\Boldx}_k^+ &= \hat{\Boldx}_k^- + \BoldK_k \, (\Boldy_k - \BoldH_k \hat{\Boldx}_k^-)
 \end{align}
 
 The posterior state covariance estimate is
 \begin{align}
-	\BoldP_k^+ &= (\BoldI - \BoldK_k \, \BoldH_k) \, \BoldP_k^- \nonumber \\
-	\BoldP_k^+ &= \BoldP_k^- - \BoldP_k^- \BoldH_k^\top \big(\BoldH_k \, \BoldP_k^- \BoldH_k^\top + \BoldR \big)^{-1} \BoldH_k \, \BoldP_k^- \nonumber \\
-	\BoldP_k^+ &= \big((\BoldP_k^-)^{-1} + \BoldH_k^\top \BoldR^{-1} \BoldH_k \big)^{-1}
+	\BoldP_k^+ &= (\BoldI - \BoldK_k \, \BoldH_k) \, \BoldP_k^-
 \end{align}
