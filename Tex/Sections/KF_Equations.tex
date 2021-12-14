@@ -26,11 +26,11 @@ Optimal Kalman Gain is
 \end{align}
 
 The posterior state estimate is
-\begin{align}
+\begin{align} \label{eqn:posterior_state_estimate}
 	\hat{\Boldx}_k^+ &= \hat{\Boldx}_k^- + \BoldK_k \, (\Boldy_k - \BoldH_k \hat{\Boldx}_k^-)
 \end{align}
 
 The posterior state covariance estimate is
-\begin{align}
+\begin{align} \label{eqn:posterior_state_covar}
 	\BoldP_k^+ &= (\BoldI - \BoldK_k \, \BoldH_k) \, \BoldP_k^-
 \end{align}

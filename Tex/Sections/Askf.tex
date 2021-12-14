@@ -1,3 +1,13 @@
+The state augmentation is acheived by concatination of state vectors at time step $k$ with state at preceeding time step.
+For $N$ time step delays, the agumented state vector is
+\begin{align}
+	\tilde{\Boldx}_k =
+	\begin{bmatrix}
+		\Boldx_k \\ \Boldx_{k-1} \\ \vdots \\ \Boldx_{k-N}
+	\end{bmatrix} 
+\end{align}
+
+
 The uncertain delay parameter $\tau_k$ and the measurement bias parameter $\Boldb_k$ are unknown. Hence, the state vector is augmented with these unknown parameters to estimate their values. The augmented state is defined as
 \begin{align}
 	\tilde{\Boldx}_k =

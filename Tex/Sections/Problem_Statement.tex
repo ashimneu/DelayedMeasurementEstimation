@@ -1,7 +1,3 @@
-
-%The overall state estimation process involves two steps, time propagation and measurement update. 
-%While this article includes a linearized time propagation for the completeness of the estimation process, the prime focus shall be on the measurement update portion. 
-
 Recursive Bayesian estimation consists of time propagation for prediction of the state and measurement update to correct the predicted state.
 
 The continuous time propagation model can be represented as
@@ -42,4 +38,6 @@ The linear representations of the measurement models of eqns. (\ref{eqn:DelayedM
 where $\BoldH_{k-N} \in \mathbb{R}^{m_d \times n}$ is the measurement matrix that relates the delayed measurement $\Boldz_{k}$ to the state at time $k-N$, i.e. $\Boldx_{k-N}$. 
 $\BoldC_k\in \mathbb{R}^{m_u \times n}$ is the measurement matrix that relates undelayed measurement $\Boldz_k$ to the state at time $k$, i.e. $\Boldx_k$ .
 
-The measurement update at time $k$ involves a state prior which is modeled as a Gaussian probability distribution $\Boldx_k \sim \mathcal{N}(\hat{\Boldx}_k^-,\BoldP_k^-)$, where the mean $\hat{\Boldx}_k^-$ and error covariance matrix $\BoldP_k^-$ are provided by the time propagation step.
+The measurement update at time step $k$ involves a state prior which is modeled as a Gaussian probability distribution $\Boldx_k \sim \mathcal{N}(\hat{\Boldx}_k^-,\BoldP_k^-)$, where the mean $\hat{\Boldx}_k^-$ and error covariance matrix $\BoldP_k^-$ are provided by the time propagation step.
+
+The span of each time steps are assumed to be constant and denoted by $\tau$.
