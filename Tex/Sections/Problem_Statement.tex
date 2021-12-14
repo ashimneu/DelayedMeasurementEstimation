@@ -7,26 +7,25 @@ Recursive Bayesian estimation consists of time propagation for prediction of the
 The continuous time propagation model can be represented as
 \begin{equation}
 	\label{eqn:StatePropModel}
-	\dot{\Boldx}(t) = \Boldf \Big(\Boldx(t), \Boldu(t) \Big) + \Boldomega(t)
+	\Boldx_{k+1} = \Boldf (\Boldx_k, \Boldu_k ) + \Boldomega_k
 \end{equation}
 where $\Boldx_k \in\mathbb{R}^n$ represents the state vector at discrete-time $k$, $\Boldu_k$ is the control input and $\Boldw_k$ is zero-mean, white, Gaussian process noise with covariance matrix $\BoldQ_k$. $\Boldf (\cdot)$ represents the relation for propagation of the system between successive time steps.
 The measurement models are represented as
 \begin{align} 
 	\label{eqn:DelayedMeasurementModel}
-	\Boldz(t) &= \Boldh \Big( \Boldx(t), b(t),N \Big) + \Boldzeta(t) \\
+	\Boldz_k &= \Boldh ( \Boldx_{k}, \Boldb_{k}, \tau_k ) + \Boldzeta_k \\
 	\label{eqn:UndelayedMeasurementModel}
-	\Boldy(t) &= \Boldc \Big( \Boldx(t) \Big) + \Boldeta(t),
+	\Boldy_k &= \Boldc ( \Boldx_k ) + \Boldeta_k,
 \end{align}
-where $\Boldz_k$ is a vector of delayed measurements, $\Boldy_k$ is a vector of measurements unaffected by any delay and $N$ is the number of time steps $\Boldz_k$ is delayed by. 
-$\Boldh(\cdot)$ and $\Boldc(\cdot)$ represent the relation between the system state and the measurements $\Boldz(t)$ and $\Boldy(t)$, respectively.
-$b_k$ represents the uncertain sensor bias affecting measurement $\Boldz_k$.
+where $\Boldz_k$ is a vector of delayed measurements affected by bias $\Boldb_k$, $\Boldy_k$ is a vector of measurements unaffected by the delay and $\tau_k = N$ is number of delay time steps.
+$\Boldh(\cdot)$ and $\Boldc(\cdot)$ represent the relation between the system state and the measurements $\Boldz_k$ and $\Boldy_k$, respectively.
 $\Boldzeta_k$ and $\Boldeta_k$ are zero-mean, white, Gaussian measurement noises with covariance matrices $\BoldR_k$ and $\BoldSigma_k$, respectively.
-The covariance matrices $\BoldSigma$ and $\BoldR$ are assumed to be invertible and diagonal\footnote
+The covariance matrices $\BoldSigma_k$ and $\BoldR_k$ are assumed to be invertible and diagonal\footnote
 {\label{ftnt:R_assumption}
 	Note that there is no restriction attached to this assumption. The solution can be used for any  covariance matrix by using the transformation $\Boldy' =\BoldSigma_R  \, \Boldy$ with $\BoldR^{-1} = \BoldSigma_R \, \BoldSigma_R^\top$, the measurement model for $\Boldy'$ is:
 	$$\Boldy'=\BoldH' \,\Boldx+\Boldeta' \mbox{ where } \BoldH' = \Sigma_R  \, \BoldH \mbox{ , } \Boldeta' \sim \mathcal{N}(\0,\,\BoldI).$$
-} 
-which can be written as $\BoldSigma = \sum_{i=1}^{m_d} \rho_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$ and $\BoldR = \sum_{i=1}^{m_u} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, respectively, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
+}
+, which can be written as $\BoldSigma = \sum_{i=1}^{m_d} \rho_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$ and $\BoldR = \sum_{i=1}^{m_u} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, respectively, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
 The prior and measurement noise are independent.
 
 The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:StatePropModel}) can be represented as
@@ -35,9 +34,8 @@ The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:St
 	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k.
 \end{align}
 The linear representations of the measurement models of eqns. (\ref{eqn:DelayedMeasurementModel}) and (\ref{eqn:UndelayedMeasurementModel}) are
-\begin{align}
-	\label{eqn:LinearDelayedMeasurementModel}
-	\Boldz_k &\doteq \BoldH_{k-N} \Boldx_{k-N} + b_k +\Boldzeta_k \\
+\begin{align} \label{eqn:LinearDelayedMeasurementModel}
+	\Boldz_k &\doteq \BoldH_{k-N} \Boldx_{k-N} + \Boldb_{k-N} +\Boldzeta_k \\
 	\label{eqn:LinearUndelayedMeasurementModel}
 	\Boldy_k &\doteq \BoldC_k \Boldx_k + \Boldeta_k,
 \end{align}

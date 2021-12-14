@@ -1,31 +1,31 @@
-The uncertain delay parameter $N$ and the measurement bias parameter $b$ are unknown. To estimate them, the state vector is augmented with these unknown parameters and augmented state is defined as
+The uncertain delay parameter $\tau_k$ and the measurement bias parameter $\Boldb_k$ are unknown. Hence, the state vector is augmented with these unknown parameters to estimate their values. The augmented state is defined as
 \begin{align}
-	\tilde{\Boldx}(t) =
+	\tilde{\Boldx}_k =
 	\begin{bmatrix}
-		\Boldx(t) \\ N(t) \\ b(t)
+		\Boldx_k \\ \tau_k \\ \Boldb_k
 	\end{bmatrix} 
 \end{align}
-To model the time varying delay parameter $N$, its dynamics is defined as $\dot{N}(t) = \vartheta(t)$, where $\vartheta(t)$ is a white Gaussian noise. 
+The continuous-time dynamics of the uncertain delay parameter $\tau_k$ is modelled as $\dot{\tau}(t) = \vartheta(t)$, where $\vartheta(t)$ is a white Gaussian noise. 
 
-The system model can be represented as
+The discrete-time system model as a function of the augmented state is represented as
 \begin{align}
-	\dot{\tilde{\Boldx}}(t) &= 
-	\tilde{\Boldf} \, \Big( \tilde{\Boldx}(t), \Boldu(t) \Big) + \Boldpsi(t)\\
+	\tilde{\Boldx}_{k+1} &= 
+	\tilde{\Boldf} \, \Big( \tilde{\Boldx}_k, \Boldu_k \Big) + \Boldpsi_k\\
 	\begin{bmatrix}
-		\dot{\Boldx}(t) \\ \dot{N}(t) \\ \dot{b}(t)
+		\Boldx_{k+1} \\ \tau_{k+1} \\ \Boldb_{k+1}
 	\end{bmatrix} &= 
 	\begin{bmatrix}
-		\Boldf \Big( \big[\, \BoldI \ \ 0 \ \ 0 \big] \,\tilde{\Boldx}(t), \Boldu(t) \Big) + \Boldomega(t) \\ \vartheta(t) \\ \varphi(t)
+		\Boldf \Big( \big[\, \BoldI \ \ 0 \ \ 0 \big] \,\tilde{\Boldx}_k, \Boldu_k \Big) + \Boldomega_k \\ \vartheta_k \\ \varphi_k
 	\end{bmatrix} \nonumber
 \end{align}
-where $\Boldpsi(t) = \begin{bmatrix} \Boldomega(t)^\top & \vartheta(t) & \varphi(t). \end{bmatrix}^\top$
+where $\Boldpsi_k = \begin{bmatrix} \Boldomega_k^\top & \vartheta_k & \varphi_k. \end{bmatrix}^\top$
 
-The discrete-time measurement models in eqns.(\ref{eqn:LinearDelayedMeasurementModel}) \& (\ref{eqn:LinearUndelayedMeasurementModel}) can be rewritten as
+The measurements in eqns. (\ref{eqn:DelayedMeasurementModel}) \& (\ref{eqn:UndelayedMeasurementModel}) as the functions of the augmented state are represented as
 \begin{align} 
 	\label{eqn:DelayedMeasurementModelAug}
-	\Boldz(t) &= \Boldc \Big( \tilde{\Boldx}(t) \Big) + \Boldzeta(t) \\
+	\Boldz_k &= \tilde{\BoldH}_k \Big( \tilde{\Boldx}_k \Big) + \Boldzeta_k \\
 	\label{eqn:UndelayedMeasurementModelAug}
-	\Boldy(t) &= \Boldh \Big( \big[\, \BoldI \ \ 0 \ \ 0 \big] \,\tilde{\Boldx}(t) \Big) + \Boldeta(t).
+	\Boldy_k &= \Boldc_k \Big( \big[\, \BoldI \ \ \0_{m_u \times m_u} \ \ \0_{m_u \times 1} \big] \,\tilde{\Boldx}_k \Big) + \Boldeta_k.
 \end{align}
 
 \begin{align}
