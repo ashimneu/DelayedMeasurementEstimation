@@ -4,18 +4,34 @@
 	\label{fig:delay_uncertainty}
 \end{figure}
 
-This section will describe the state estimation approach for the linear system in eqns. (\ref{eqn:LinearStatePropModel}) and (\ref{eqn:LinearUndelayedMeasurementModel}), along with time delayed measurements modelled in eqn. (\ref{eqn:LinearDelayedMeasurementModel}), which are corrupted by unknown bias $\Boldb_k$. 
-For the derivation of the approach described in this section the reader is advised to refer to the Section IV in \cite{choi2012state}.
+This section will describe the state estimation approach for the linear system in eqns. (\ref{eqn:LinearStateProp}) and (\ref{eqn:LinearUndelayedMeasurement}), along with time delayed measurements modelled in eqn. (\ref{eqn:LinearDelayedMeasurement}), which are corrupted by unknown bias $\Boldb_k$. 
+For the derivation of the approach described in this section the reader is advised to refer to Section IV in \cite{choi2012state}.
 
 It is essential to known the value of bias to migitate its effect on the posterior estimate of the state. Since it's not known prior to the estmiation, $\Boldb_k$ is simultaneously estimated along with the state. 
 Assume that state vector at time $k$ is denoted by $\Boldtheta_k$.
-The simultaneous estimation of the state \& the bias is achieved by performaning estimation over an updated state vector 
+The simultaneous estimation of the state \& the bias is achieved by performaning estimation over an updated state vector defined as 
 \begin{equation}
 	\Boldx_k =
 	\begin{bmatrix}
 		\Boldtheta_k \\ \Boldb_k
 	\end{bmatrix}. 
 \end{equation}
+
+For the updated state vector, the linear time propagation model of eqn. (\ref{eqn:LinearStateProp}) can be rewritten as
+
+\begin{align}
+	\label{eqn:LinearStateProp4UpdatedState}
+	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k,
+\end{align}
+
+the linear measurement models in eqns. (\ref{eqn:LinearDelayedMeasurement}) and (\ref{eqn:LinearUndelayedMeasurement}) can be rewritten as
+
+\begin{align}\label{eqn:LinearDelayedMeasurement4UpdatedState}
+	\Boldz_k &\doteq \BoldH_{k-N} \Boldx_{k-N} + \Boldb_{k-N} +\Boldzeta_k \\
+	\label{eqn:LinearUndelayedMeasurement4UpdatedState}
+	\Boldy_k &\doteq \BoldC_k \Boldx_k + \Boldeta_k
+\end{align}
+
 
 The probability density function (PDF) $p(t)$ of the delay is assumed to be a known. As shown in figure (\ref{fig:delay_uncertainty}) the pdf is assumed to span over $N_{max}$ time steps. This assumption assigns a probability for correspondence of the delayed measurement $\Boldz_k$ with each of the time steps within time step $k$ and $k- N_{max}$.
 Correspondence $\phi(k,i)$, $\forall i \in \{0, \dots, N_{max}\}$, signifies that measurement $\Boldz_k$ was induced by the state $\Boldx_{k-N_{max}+i}$.

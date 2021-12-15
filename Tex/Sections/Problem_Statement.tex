@@ -2,15 +2,15 @@ Recursive Bayesian estimation consists of time propagation for prediction of the
 
 The continuous time propagation model can be represented as
 \begin{equation}
-	\label{eqn:StatePropModel}
+	\label{eqn:StateProp}
 	\Boldx_{k+1} = \Boldf (\Boldx_k, \Boldu_k ) + \Boldomega_k
 \end{equation}
 where $\Boldx_k \in\mathbb{R}^n$ represents the state vector at discrete-time $k$, $\Boldu_k$ is the control input and $\Boldw_k$ is zero-mean, white, Gaussian process noise with covariance matrix $\BoldQ_k$. $\Boldf (\cdot)$ represents the relation for propagation of the system between successive time steps.
 The measurement models are represented as
 \begin{align} 
-	\label{eqn:DelayedMeasurementModel}
+	\label{eqn:DelayedMeasurement}
 	\Boldz_k &= \Boldh ( \Boldx_{k}, \Boldb_{k}, \tau_k ) + \Boldzeta_k \\
-	\label{eqn:UndelayedMeasurementModel}
+	\label{eqn:UndelayedMeasurement}
 	\Boldy_k &= \Boldc ( \Boldx_k ) + \Boldeta_k,
 \end{align}
 where $\Boldz_k$ is a vector of delayed measurements affected by bias $\Boldb_k$, $\Boldy_k$ is a vector of measurements unaffected by the delay and $\tau_k = N$ is number of delay time steps.
@@ -24,15 +24,15 @@ The covariance matrices $\BoldSigma_k$ and $\BoldR_k$ are assumed to be invertib
 , which can be written as $\BoldSigma = \sum_{i=1}^{m_d} \rho_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$ and $\BoldR = \sum_{i=1}^{m_u} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, respectively, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
 The prior and measurement noise are independent.
 
-The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:StatePropModel}) can be represented as
+The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:StateProp}) can be represented as
 \begin{align}
-	\label{eqn:LinearStatePropModel}
+	\label{eqn:LinearStateProp}
 	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k.
 \end{align}
-The linear representations of the measurement models of eqns. (\ref{eqn:DelayedMeasurementModel}) and (\ref{eqn:UndelayedMeasurementModel}) are
-\begin{align} \label{eqn:LinearDelayedMeasurementModel}
+The linear representations of the measurement models of eqns. (\ref{eqn:DelayedMeasurement}) and (\ref{eqn:UndelayedMeasurement}) are
+\begin{align} \label{eqn:LinearDelayedMeasurement}
 	\Boldz_k &\doteq \BoldH_{k-N} \Boldx_{k-N} + \Boldb_{k-N} +\Boldzeta_k \\
-	\label{eqn:LinearUndelayedMeasurementModel}
+	\label{eqn:LinearUndelayedMeasurement}
 	\Boldy_k &\doteq \BoldC_k \Boldx_k + \Boldeta_k,
 \end{align}
 where $\BoldH_{k-N} \in \mathbb{R}^{m_d \times n}$ is the measurement matrix that relates the delayed measurement $\Boldz_{k}$ to the state at time $k-N$, i.e. $\Boldx_{k-N}$. 

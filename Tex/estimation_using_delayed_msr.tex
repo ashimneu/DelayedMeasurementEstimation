@@ -27,7 +27,7 @@
 	\input{./Sections/Problem_Statement}
 
 \section{Estimation Using Measurement Without Delay} \label{sect:estimation_no_delayed_msr}
-	In this section, state estimation using a linear Kalman filter will be described for the linear system model in eqns. (\ref{eqn:LinearStatePropModel}) and (\ref{eqn:LinearUndelayedMeasurementModel}) while assuming that delayed measurements described by eqn.(\ref{eqn:LinearDelayedMeasurementModel}) are absent at all times.\\
+	In this section, state estimation using a linear Kalman filter will be described for the linear system model in eqns. (\ref{eqn:LinearStateProp}) and (\ref{eqn:LinearUndelayedMeasurement}) while assuming that delayed measurements described by eqn.(\ref{eqn:LinearDelayedMeasurement}) are absent at all times.\\
 	\input{./Sections/KF_equations}	
 %	\subsection{System Model}
 %	\input{./Sections/system_model}
@@ -39,6 +39,12 @@
 	
 %	\subsection{Estimation Using Augmented State Kalman Filter }
 %	\input{./Sections/Askf}	
+
+\section{Application in Gantry Positioning}
+	\input{./Sections/positioning_application}
+	\subsection{Trolley-Gantry Physical Model}
+	\input{./Sections/gantry_model}
+	
 
 \bibliographystyle{IEEEtran}
 \bibliography{References}
