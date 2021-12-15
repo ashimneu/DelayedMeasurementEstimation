@@ -1,6 +1,7 @@
-The state space model has the standard form described in eqns. (\ref{eqn:state_prop_model}-\ref{eqn:msr_update_model}). 
-The rover state vector is defined as
-$\Boldx_v = [\,\Boldp^\top \!\!\!\!,  \, \Boldv^\top \!\!\!\!, \, \Bolda^\top]^\top$ 
+The state space model has the standard form described in eqns. (\ref{eqn:state_propl}-\ref{eqn:msr_update}). 
+For the GNSS based positiong of the gantry, a GNSS receiver is permanently attached to the gantry. Therefore, the position of the gantry is considered same as the estimated position of the receiver. Hence, gantry and rover terms are used here interchangbly.
+
+$\Boldxi_k = [\,\Boldp^\top \!\!\!\!,  \, \Boldv^\top \!\!\!\!, \, \Bolda^\top]^\top$ 
 and the receiver clock state vector is defined as $\Boldx_c = [\,N, \, b]^\top$.
 The sub-components $\Boldx_v$ and $\Boldx_c$ propagate independently through time hence their respective components in the state space model are not coupled.
 The matrices of the discrete-time state-space model are
