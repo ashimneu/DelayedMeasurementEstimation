@@ -1,11 +1,11 @@
 Recursive Bayesian estimation consists of time propagation for prediction of the state and measurement update to correct the predicted state.
 
-The continuous time propagation model can be represented as
+The discrete-time propagation model can be represented as
 \begin{equation}
 	\label{eqn:StateProp}
 	\Boldx_{k+1} = \Boldf (\Boldx_k, \Boldu_k ) + \Boldomega_k
 \end{equation}
-where $\Boldx_k \in\mathbb{R}^n$ represents the state vector at discrete-time $k$, $\Boldu_k$ is the control input and $\Boldw_k$ is zero-mean, white, Gaussian process noise with covariance matrix $\BoldQ_k$. $\Boldf (\cdot)$ represents the relation for propagation of the system between successive time steps.
+where $\Boldx_k \in\mathbb{R}^n$ represents the state vector at discrete-time $k$, $\Boldu_k \in \mathbb{R}^p$ is the control input and $\Boldw_k \in \mathbb{R}^n$ is zero-mean, white, Gaussian process noise with covariance matrix $\BoldQ_k \in \mathbb{R}^{n \times n}$. $\Boldf (\cdot)$ represents the relation for propagation of the system between successive time steps.
 The measurement models are represented as
 \begin{align} 
 	\label{eqn:DelayedMeasurement}
@@ -13,21 +13,21 @@ The measurement models are represented as
 	\label{eqn:UndelayedMeasurement}
 	\Boldy_k &= \Boldc ( \Boldx_k ) + \Boldeta_k,
 \end{align}
-where $\Boldz_k$ is a vector of delayed measurements affected by bias $\Boldb_k$, $\Boldy_k$ is a vector of measurements unaffected by the delay and $\tau_k = N$ is number of delay time steps.
+where $\Boldz_k \in \mathbb{R}^{m_d}$ is a vector of measurements affected by measurement bias $\Boldb_k \in \mathbb{R}^{m_d}$. $\Boldy_k \in \mathbb{R}^{m_u}$ is a vector of measurements unaffected by the delay and $\tau_k = N \in \mathbb{R}$ is number of delay time steps.
 $\Boldh(\cdot)$ and $\Boldc(\cdot)$ represent the relation between the system state and the measurements $\Boldz_k$ and $\Boldy_k$, respectively.
-$\Boldzeta_k$ and $\Boldeta_k$ are zero-mean, white, Gaussian measurement noises with covariance matrices $\BoldR_k$ and $\BoldSigma_k$, respectively.
+$\Boldzeta_k \in \mathbb{R}^{m_d}$ and $\Boldeta_k \in \mathbb{R}^{m_u}$ are zero-mean, white, Gaussian measurement noises with covariance matrices $\BoldR_k \in \mathbb{R}^{m_d}$ and $\BoldSigma_k \in \mathbb{R}^{m_u}$, respectively.
 The covariance matrices $\BoldSigma_k$ and $\BoldR_k$ are assumed to be invertible and diagonal\footnote
 {\label{ftnt:R_assumption}
 	Note that there is no restriction attached to this assumption. The solution can be used for any  covariance matrix by using the transformation $\Boldy' =\BoldSigma_R  \, \Boldy$ with $\BoldR^{-1} = \BoldSigma_R \, \BoldSigma_R^\top$, the measurement model for $\Boldy'$ is:
 	$$\Boldy'=\BoldH' \,\Boldx+\Boldeta' \mbox{ where } \BoldH' = \Sigma_R  \, \BoldH \mbox{ , } \Boldeta' \sim \mathcal{N}(\0,\,\BoldI).$$
 }
-, which can be written as $\BoldSigma = \sum_{i=1}^{m_d} \rho_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$ and $\BoldR = \sum_{i=1}^{m_u} \sigma_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$, respectively, where $\Bolde_i$ is the $i^{th}$ column of the identity matrix $\BoldI \in \mathbb{R}^{m \times m}$ .
+, which can be written as $\BoldSigma = \sum_{i=1}^{m_d} \rho_{i}^2 \, \Bolde_i  \,{\Bolde_i}^\top$ and $\BoldR = \sum_{i=1}^{m_u} \sigma_{i}^2 \, \Boldf_i  \,{\Boldf_i}^\top$, respectively. $\Bolde_i$ and $\Boldf_i$ are the $i^{th}$ column of the identity matrices $\BoldI \in \mathbb{R}^{m_d \times m_d}$ and $\BoldI \in \mathbb{R}^{m_u \times m_u}$, respectively.
 The prior and measurement noise are independent.
 
 The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:StateProp}) can be represented as
 \begin{align}
 	\label{eqn:LinearStateProp}
-	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldw_k.
+	\Boldx_{k+1} &\doteq \BoldF \Boldx_k + \BoldGamma \Boldomega_k.
 \end{align}
 The linear representations of the measurement models of eqns. (\ref{eqn:DelayedMeasurement}) and (\ref{eqn:UndelayedMeasurement}) are
 \begin{align} \label{eqn:LinearDelayedMeasurement}
@@ -40,4 +40,4 @@ $\BoldC_k\in \mathbb{R}^{m_u \times n}$ is the measurement matrix that relates u
 
 The measurement update at time step $k$ involves a state prior which is modeled as a Gaussian probability distribution $\Boldx_k \sim \mathcal{N}(\hat{\Boldx}_k^-,\BoldP_k^-)$, where the mean $\hat{\Boldx}_k^-$ and error covariance matrix $\BoldP_k^-$ are provided by the time propagation step.
 
-The span of each time steps are assumed to be constant and denoted by $\tau$.
+The span of each time steps are assumed to be constant and denoted by $T$.

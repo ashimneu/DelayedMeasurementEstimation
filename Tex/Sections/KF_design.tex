@@ -1,14 +1,27 @@
-The state space model has the standard form described in eqns. (\ref{eqn:state_propl}-\ref{eqn:msr_update}). 
-For the GNSS based positiong of the gantry, a GNSS receiver is permanently attached to the gantry. Therefore, the position of the gantry is considered same as the estimated position of the receiver. Hence, gantry and rover terms are used here interchangbly.
+At time step $k$, the system state vector is $\Boldx = [\,\Boldp^\top \dss,  \, \Boldv^\top \dss, \, \Bolda^\top \dss, t_r, \beta_r, \Boldb^\top ]^\top \in \mathbb{R}^{n_s} $, where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively.
+The use of subscript to represent time step has been dropped for current section. 
+%Instead it shall be used to denote a certain portion of the variable corresponding to the state variables represented by the   $\Boldx$.
+The PVA state vector is $\Boldx_v = [\,\Boldp^\top \dss,  \, \Boldv^\top \dss, \, \Bolda^\top]$.
+The receiver clock state vector is $\Boldx_c = [t_r, \beta_r]^\top$, where $c$, $\beta$ $\in \mathbb{R}$ are the receiver clock bias and clock drift, respectively. 
+$\Boldx_b = \Boldb\in \mathbb{R}^{m_d}$ is the vector of bias affecting the delayed measurement $\Boldz$. 
+Therefore, $n_s = 11 + m_d$. $\BoldF \in \mathbb{R}^{n_s \times n_s}$ is the state transition matrix.
+$\Boldw \sim \mathcal{N}(\0,\,\BoldQ)$ is the process noise vector which is assumed to have a Gaussian distribution. $\BoldGamma \in \mathbb{R}^{n_s \times n_s}$ is the corresponding noise matrix. $\tau$ and $T$ are used to denote the time increments between successive state propagation and measurement update steps. 
+Since the propagation is done at higher rate compared to measurement update, $\tau \ll T$.
+When the GNSS pseudorange measurements are used the observation matrix $\BoldC$ is
+\begin{equation}
+	\BoldC = \begin{bmatrix}		
+		\mathbfcal{C} & \0_{m \times 3} & \0_{m \times 3} & \1_{m \times 1} & \0_{m \times 1} \\		
+	\end{bmatrix}
+\end{equation}
+where $\mathbfcal{C} = [\, \mathfrak{C}^1 \, \mathfrak{C}^2 \, \dots \, \mathfrak{C}^m ]^\top$ and each $\mathfrak{C}^s$ represents a line-of-sight unit vector between satellite $s$ and the rover GNSS antenna. 
+The symbols $\0_{a \times b}$ and $\1_{a \times b}$ are  matrices consisting of $a$ rows and $b$ columns whose all entries are $0$s and $1$s, respectively. 
 
-$\Boldxi_k = [\,\Boldp^\top \!\!\!\!,  \, \Boldv^\top \!\!\!\!, \, \Bolda^\top]^\top$ 
-and the receiver clock state vector is defined as $\Boldx_c = [\,N, \, b]^\top$.
-The sub-components $\Boldx_v$ and $\Boldx_c$ propagate independently through time hence their respective components in the state space model are not coupled.
+The sub-components $\Boldx_v$, $\Boldx_c$ and $\Boldx_b$ propagate independently through time hence their respective components in the state space model are not coupled.
 The matrices of the discrete-time state-space model are
-\begin{align}
-	\BoldF = \begin{bmatrix} \BoldF_v & \0 \\ \0 & \BoldF_c \end{bmatrix}, ~
-	\BoldGamma = \begin{bmatrix} \BoldGamma_v & \0 \\ \0 & \BoldGamma_c	\end{bmatrix}, ~
-	\BoldQ = \begin{bmatrix} \BoldQ_v & \0 \\ \0 & \BoldQ_c \end{bmatrix}
+\begin{align} 
+	\BoldF = \begin{bmatrix} \BoldF_v \dss & \0_3 \dss & \0_3 \\ \0_3 \dss & \BoldF_c \dss & \0_3 \\ \0_3 \dss & \0_3 \dss & \BoldF_b \end{bmatrix} \dss, 
+	\BoldGamma = \begin{bmatrix} \BoldGamma_v \dss & \0_3 \dss & \0_3 \\ \0_3 \dss & \BoldGamma_c \dss & \0_3 \\ \0_3 \dss & \0_3 \dss & \BoldGamma_b \end{bmatrix} \dss, 
+	\BoldQ = \begin{bmatrix} \BoldQ_v \dss & \0_3 \dss & \0_3 \\ \0_3 \dss & \BoldQ_c \dss & \0_3 \\ \0_3 \dss & \0_3 \dss & \BoldQ_b \end{bmatrix}
 \end{align}
 %The time step of state propagation is defined as $T = 0.1$ seconds and the measurement update using GNSS pseudorange occur once every 1 second.
 
@@ -16,30 +29,100 @@ The continuous-time PVA vehicle model is
 \begin{align}
 	\dot{\Boldx}_v(t) \doteq 
 	\begin{bmatrix}
-		\0 & \BoldI & \0 \\ \0 & \0 & \BoldI \\ \0 & \0 & -\lambda_a \BoldI
+		\0_3 & \BoldI_3 & \0_3 \\ \0_3 & \0_3 & \BoldI_3 \\ \0_3 & \0_3 & -\lambda_a \BoldI_3
 	\end{bmatrix} 
 	\Boldx_v(t) +
-	\begin{bmatrix} \0 & \0 & \0 \\ \0 & \0 & \0 \\ \0 & \0 & \BoldI \end{bmatrix} \Boldw_a(t)
+	\begin{bmatrix} \0_3 & \0_3 & \0_3 \\ \0_3 & \0_3 & \0_3 \\ \0_3 & \0_3 & \BoldI_3 \end{bmatrix} \Boldw_a(t)
 \end{align}
 where $\Boldomega_a(t)$ is modeled as Gaussian white noise with power spectral density $\BoldP_a = \sigma^2_a$. 
 The corresponding discrete-time description of the PVA vehicle model is approximated as
 \begin{align}
 	\BoldF_v &= 
 	\begin{bmatrix}
-		\BoldI_{3 \times 3} & T\,\BoldI_{3 \times 3} & a_3 \, \BoldI_{3 \times 3} \\
-		\0_{3 \times 3} & \BoldI_{3 \times 3} & a_2 \, \BoldI_{3 \times 3} \\
-		\0_{3 \times 3} & \0_{3 \times 3} & a_1 \, \BoldI_{3 \times 3}
+		\BoldI_3 & T\,\BoldI_3 & a_3 \, \BoldI_{3} \\
+		\0_3 & \BoldI_3 & a_2 \, \BoldI_{3} \\
+		\0_3 & \0_3 & a_1 \, \BoldI_{3}
 	\end{bmatrix}, ~ \\
 	\BoldGamma_v &\approx
 	\begin{bmatrix}
-		\big(T^5/20 \big)^{\frac{1}{2}} \, \BoldI_{3 \times 3} & \0_{3 \times 3} & \0_{3 \times 3}\\
-		\0_{3 \times 3} & \big(T^3 / 3\big)^{\frac{1}{2}} \, \BoldI_{3 \times 3} & \0_{3 \times 3} \\
-		\0_{3 \times 3} & \0_{3 \times 3} & \sqrt{T} \, \BoldI_{3 \times 3}
+		\big(T^5/20 \big)^{\frac{1}{2}} \, \BoldI_3 & \0_3 & \0_3\\
+		\0_3 & \big(T^3 / 3\big)^{\frac{1}{2}} \, \BoldI_3 & \0_3 \\
+		\0_3 & \0_{3 \times 3} & \sqrt{T} \, \BoldI_3
 	\end{bmatrix}, \\ 
 	\BoldQ_{v} &= 
-	\begin{bmatrix} \0_{3 \times 3} & \0_{3 \times 3} & \0_{3 \times 3} \\ 
-					\0_{3 \times 3} & \0_{3 \times 3} & \0_{3 \times 3} \\
-		 			\0_{3 \times 3} & \0_{3 \times 3} & \sigma^2_a \, \BoldI_{3 \times 3} 
+	\begin{bmatrix} \0_3 & \0_3 & \0_3 \\ 
+					\0_3 & \0_3 & \0_3 \\
+		 			\0_3 & \0_3 & \sigma^2_a \, \BoldI_3 
 	\end{bmatrix},
 \end{align}
 where $a_1 = \exp^{\lambda_a T}$, $a_2 = (1 - \exp^{-\lambda_a T})/ \lambda_a$, and $a_3 = (\lambda_a T - 1 + \exp^{-\lambda_a T})/ \lambda_a^2$.
+
+The continuous-time description of the clock model is 
+\begin{align}
+	\dot{\Boldx}_c(t) \doteq 
+	\begin{bmatrix}
+		0 & 1 \\ 0 & -\lambda_c
+	\end{bmatrix} 
+	\Boldx_c(t) +
+	\begin{bmatrix} 0 \\ 1 \end{bmatrix} \Boldw_c(t)
+\end{align}
+where $\Boldw_c(t)$ is modeled as Gaussian white noise with power spectral density $\BoldQ_c = \sigma_c^2$. 
+The corresponding discrete-time description of the clock model is 
+\begin{align}
+	& \BoldF_c = 
+	\begin{bmatrix}
+		1 & \pi_1 \\ 0 & \pi_2
+	\end{bmatrix}, ~
+	\BoldGamma_c \approx
+	\begin{bmatrix}
+		(T^3 / 3)^{\frac{1}{2}} & 0 \\
+		0 & \sqrt{T}
+	\end{bmatrix}, ~  
+	\BoldQ_{c} = 
+	\begin{bmatrix}
+		\sigma_{t_r}^2 & 0 \\ 0 & \sigma_{\beta_r}^2
+	\end{bmatrix}
+\end{align}
+where $\pi_1 = (1 - \exp^{-\lambda_c T})/ \lambda_c$ and $\pi_2 = \exp^{-\lambda_c T}$.
+The approximations in $\BoldGamma_v$ and $\BoldGamma_c$ yield the correct diagonal of the discrete-time noise covariance matrix but approximates the off-diagonal terms.
+
+The continuous-time description of the measurement bias
+\begin{align}
+	\dot{\Boldx}_b(t) \doteq 
+	\begin{bmatrix}
+		\0_3 & \BoldI_3 \\ \0_3 & -\lambda_b \BoldI_3
+	\end{bmatrix} 
+	\Boldx_b(t) +
+	\begin{bmatrix} \0_3 & \0_3 \\ \0_3 & \BoldI_3 \end{bmatrix} \Boldw_b(t)
+\end{align}
+where $\Boldw_b(t)$ is modeled as Gaussian white noise with power spectral density $\BoldQ_b = \sigma_b^2$. 
+The corresponding discrete-time description of the clock model is 
+\begin{align}
+	& \dss \BoldF_b = 
+	\begin{bmatrix}
+		\BoldI_3 \dss & \chi_1 \BoldI_3 \\ \0_3 \dss & \chi_2 \BoldI_3
+	\end{bmatrix} \ds,
+	\BoldGamma_c \approx
+	\begin{bmatrix}
+		\sqrt{(\frac{T^3}{3})} \BoldI_{3} \dss & \0_3 \\
+		0 \dss & \sqrt{T} \BoldI_3
+	\end{bmatrix} \ds,  
+	\BoldQ_{c} = 
+	\begin{bmatrix}
+		\0_3 \dss & \0_3 \\ \0_3 \dss & \sigma_{b}^2 \BoldI_3
+	\end{bmatrix}
+\end{align}
+where $\chi_1 = (1 - \exp^{-\lambda_b T})/ \lambda_c$ and $\chi_2 = \exp^{-\lambda_b T}$.
+The approximations in $\BoldGamma_v$, $\BoldGamma_c$ and $\BoldGamma_b$ yield the correct diagonal of the discrete-time noise covariance matrix but approximates the off-diagonal terms.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}[h]{|c|c|c|c|c|c|c|c|}
+		\hline
+		Quantity & 	$\lambda_a$ & $\sigma_a^2$ & $\lambda_{t_r}$ & $\sigma_{t_r}^2$ & $\sigma_{\beta_r}^2$ & $\lambda_b$ & $\sigma_b^2$ \T \\ \hline
+		value	 &  0.1 & 1.0 & 0.01 & 0.001 & 0 & &  \T \\ \hline
+		unit	 &  $s^{-1}$ & $s^{-1}$ &  $m^2s^{-5}$ & $m^2s^{-3}$ & $m^2s^{-3}$ &  &  \T \\ \hline				
+	\end{tabular}
+	\caption{Parameters of the continuous-time Markov process.}
+	\label{table:error_std_prediction}
+\end{table}

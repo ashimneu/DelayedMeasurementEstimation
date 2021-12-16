@@ -1,5 +1,6 @@
 \begin{figure}
-	{\includegraphics[width=1.0\columnwidth]{./img/delay_uncertainty.png}}
+	% trim syntax order - {Left Bottom Right Top}
+	{\includegraphics[trim={2.0cm 2.5cm 6.0cm 6.0cm},clip, width=\columnwidth]{./img/delay_uncertainty.png}}
 	\caption{Uncertianty of delay}
 	\label{fig:delay_uncertainty}
 \end{figure}
@@ -9,13 +10,8 @@ For the derivation of the approach described in this section the reader is advis
 
 It is essential to know the value of bias to migitate its effect on the posterior estimate of the state. Since it's not known prior to the estmiation, $\Boldb_k$ is simultaneously estimated along with the state. 
 Assume that state vector at time $k$ is represented by $\Boldxi_k$.
-The simultaneous estimation of the state \& the bias is achieved by performing estimation over an updated state vector defined as 
-$
-	\Boldx_k =
-	\begin{bmatrix}
-		\Boldxi_k^\top & \Boldb_k^\top
-	\end{bmatrix}^\top. 
-$
+The simultaneous estimation of the state \& the bias is achieved by performing estimation over an updated state vector defined as $\Boldx_k =	\big[\Boldxi_k^\top, \Boldb_k^\top \big]^\top$
+
 
 For the updated state vector, the linear time propagation model of eqn. (\ref{eqn:LinearStateProp}) can be rewritten as
 \begin{align}
@@ -40,7 +36,7 @@ The probability of correpondence $r_i$ is computed as
 	&= P(t_l \le t \le t_u) \\
 	&= \int_{t_l}^{ t_u} p(t) dt,
 \end{align}
-where $t_l = {j\tau - \frac{\tau}{2}}$, $t_u = {j \tau + \frac{\tau}{2}}$, $j = k - \check{N} + i $, $P(\cdot)$ denotes probability and $p(\cdot)$ denotes pdf of the time delay. When the PDF of the delay is specified, the maximum delay $\check{N}$ can be calculated using the cmulative distribution function (CDF) of the PDF. 
+where $t_l = {jT - \frac{T}{2}}$, $t_u = {j T + \frac{T}{2}}$, $j = k - \check{N} + i $, $P(\cdot)$ denotes probability and $p(\cdot)$ denotes pdf of the time delay. When the PDF of the delay is specified, the maximum delay $\check{N}$ can be calculated using the cmulative distribution function (CDF) of the PDF. 
 A value of $\check{N}$ should be chosen such that CDF of the time delay exceeds a given threshold. 
 %A higher threshold value 99.6\% will ensure that the state $\Boldx_s$, where $k-\check{N} \le s \le k$, which induced the delayed measurement $\Boldz_k$ .
 Choi et. al. have shown that probability of the correspondence $r_i$ for the given measurment $\Boldz_k$ is \cite{choi2012state}
