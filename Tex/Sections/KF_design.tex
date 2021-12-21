@@ -1,9 +1,9 @@
-At time step $k$, the system state vector is $\Boldx = [\,\Boldp^\top \dss,  \, \Boldv^\top \dss, \, \Bolda^\top \dss, t_r, \beta_r, \Boldb^\top ]^\top \in \mathbb{R}^{n_s} $, where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively.
+At time step $k$, the system state vector is $\Boldx = [\,\Boldp^\top \dss,  \, \Boldv^\top \dss, \, \Bolda^\top \dss, t_r, \beta_r, \Boldb^\top \dss, \Boldd^\top ]^\top \in \mathbb{R}^{n_s} $, where $\Boldp$, $\Boldv$, $\Bolda$ $\in \mathbb{R}^3$ represent the rover position, velocity and acceleration, respectively.
 The use of subscript to represent time step has been dropped for current section. 
 %Instead it shall be used to denote a certain portion of the variable corresponding to the state variables represented by the   $\Boldx$.
 The PVA state vector is $\Boldx_v = [\,\Boldp^\top \dss,  \, \Boldv^\top \dss, \, \Bolda^\top]$.
-The receiver clock state vector is $\Boldx_c = [t_r, \beta_r]^\top$, where $c$, $\beta$ $\in \mathbb{R}$ are the receiver clock bias and clock drift, respectively. 
-$\Boldx_b = \Boldb\in \mathbb{R}^{m_d}$ is the vector of bias affecting the delayed measurement $\Boldz$. 
+The receiver clock state vector is $\Boldx_c = [t_r, \beta_r]^\top$, where $t_r$, $\beta_r$ $\in \mathbb{R}$ are the receiver clock bias and clock drift, respectively. 
+The bias state vector is $\Boldx_b = [ \Boldb^\top \dss, \Boldd^\top ] \in \mathbb{R}^{m_d}$ where $\Boldb$ is the vector of bias and $\Boldd$ is the vector of bias drift. 
 Therefore, $n_s = 11 + m_d$. $\BoldF \in \mathbb{R}^{n_s \times n_s}$ is the state transition matrix.
 $\Boldw \sim \mathcal{N}(\0,\,\BoldQ)$ is the process noise vector which is assumed to have a Gaussian distribution. $\BoldGamma \in \mathbb{R}^{n_s \times n_s}$ is the corresponding noise matrix. $\tau$ and $T$ are used to denote the time increments between successive state propagation and measurement update steps. 
 Since the propagation is done at higher rate compared to measurement update, $\tau \ll T$.
@@ -93,7 +93,7 @@ The continuous-time description of the measurement bias
 		\0_3 & \BoldI_3 \\ \0_3 & -\lambda_b \BoldI_3
 	\end{bmatrix} 
 	\Boldx_b(t) +
-	\begin{bmatrix} \0_3 & \0_3 \\ \0_3 & \BoldI_3 \end{bmatrix} \Boldw_b(t)
+	\begin{bmatrix} \0_3 \\ \BoldI_3 \end{bmatrix} \Boldw_b(t)
 \end{align}
 where $\Boldw_b(t)$ is modeled as Gaussian white noise with power spectral density $\BoldQ_b = \sigma_b^2$. 
 The corresponding discrete-time description of the clock model is 
@@ -109,7 +109,7 @@ The corresponding discrete-time description of the clock model is
 	\end{bmatrix} \ds,  
 	\BoldQ_{c} = 
 	\begin{bmatrix}
-		\0_3 \dss & \0_3 \\ \0_3 \dss & \sigma_{b}^2 \BoldI_3
+		\0_3 \dss & \0_3 \\ \0_3 \dss & \sigma_{d}^2 \BoldI_3
 	\end{bmatrix}
 \end{align}
 where $\chi_1 = (1 - \exp^{-\lambda_b T})/ \lambda_c$ and $\chi_2 = \exp^{-\lambda_b T}$.
@@ -117,11 +117,11 @@ The approximations in $\BoldGamma_v$, $\BoldGamma_c$ and $\BoldGamma_b$ yield th
 
 \begin{table}[h!]
 	\centering
-	\begin{tabular}[h]{|c|c|c|c|c|c|c|c|}
+	\begin{tabular}[h]{|c|c|c|c|c|c|c|c|c|}
 		\hline
-		Quantity & 	$\lambda_a$ & $\sigma_a^2$ & $\lambda_{t_r}$ & $\sigma_{t_r}^2$ & $\sigma_{\beta_r}^2$ & $\lambda_b$ & $\sigma_b^2$ \T \\ \hline
-		value	 &  0.1 & 1.0 & 0.01 & 0.001 & 0 & &  \T \\ \hline
-		unit	 &  $s^{-1}$ & $s^{-1}$ &  $m^2s^{-5}$ & $m^2s^{-3}$ & $m^2s^{-3}$ &  &  \T \\ \hline				
+		Quantity & 	$\lambda_a$ & $\sigma_a^2$ & $\lambda_{t_r}$ & $\sigma_{t_r}^2$ & $\sigma_{\beta_r}^2$ & $\lambda_b$ & $\sigma_b^2$ &  $\sigma_d^2$ \T \\ \hline
+		value	 &  0.1 & 1.0 & 0.01 & 0.001 & 0 & & &  \T \\ \hline
+		unit	 &  $s^{-1}$ & $s^{-1}$ &  $m^2s^{-5}$ & $m^2s^{-3}$ & $m^2s^{-3}$ &  & & \T \\ \hline				
 	\end{tabular}
 	\caption{Parameters of the continuous-time Markov process.}
 	\label{table:error_std_prediction}
