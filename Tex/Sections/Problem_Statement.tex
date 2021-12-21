@@ -35,7 +35,7 @@ The covariance matrices $\BoldSigma_k$ and $\BoldR_k$ are assumed to be invertib
 At the initial time $t_0$, the initial state has the distribution $\Boldx_0\sim N(\hat\Boldx_0,\BoldP_0)$, where the covariance matrix $\BoldP_0$ is positive definite.
 The prior and measurement noise are assumed to be independent.
 
-The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:StateProp}) can be represented as
+The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:StateProp}) can be represented as\todo{AN: why not include the deterministic input $\BoldB\, \Boldu$?}
 \begin{align}
 	\label{eqn:LinearStateProp}
 	\Boldx_{k+1} &\doteq \BoldF \, \Boldx_k + \BoldGamma \, \Boldomega_k.
