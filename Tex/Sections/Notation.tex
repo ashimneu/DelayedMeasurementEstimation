@@ -1,18 +1,22 @@
-This section enlists and defines the notations used in this paper.
-\begin{table}[h!]
+Table \ref{table:notation} defines the notation used in this paper.
+
+
+\begin{table}[bh]
 	\centering
+	\caption{Notational conventions.}
 	\begin{tabular}[h]{|c|l|}
 		\hline
-		x 				& non-bold face variables denote $scalars$ 			\T \\
+		$T$				& constant sample period 			\T \\
+		$x$ 			& non-bold face variables denote $scalars$ 			\T \\
 		$\Boldx$ 		& boldface lower-case denotes $vector$ quantities	\T \\ 	
 		$\BoldX$ 		& boldface upper-case denotes $matrix$ quantities	\T \\
 		$\Boldx$ 		& true value of $\Boldx$ 							\T \\  	
 		$\hat{\Boldx}$ 	& estimated value of $\Boldx$						\T \\	
-		$\hat{\Boldx}_{k}$ & estimated value of $\Boldx$ at time step $k$	\T \\	
+		${\Boldx}_{k}=\Boldx(t_k)$ &  $\Boldx$ at time step $k$ (i.e., $t_k=k\,T$)	\T \\	
 		$\mathbb{R}$ 	& real numbers										\T \\ 	
 		$\mathbb{R}^a$ 	& $a$-tuple of reals								\T \\
 		$\mathbb{R}^{a \times b}$ 	& $a \times b$-tuple of reals								\T \\
-		(a,$\dots$,b) 	& open interval	between $a$ and $b$					\T \\
+		\red (a,$\dots$,b) \black	& open interval	between $a$ and $b$					\T \\
 		$\BoldI_{a}$ 	& Identity matrix of dimensions $a \times a $ \T \\
 		$\0_{a}$ 		& matrix of dimensions $a \times a $, whose all entries are 0s 	\T \\
 		$\0_{a \times b}$ 	& matrix of dimensions $a \times b $, whose all entries are 0s 	\T \\
@@ -20,7 +24,6 @@ This section enlists and defines the notations used in this paper.
 		\hline
 		
 	\end{tabular}
-	\caption{Notational conventions.}
 	\label{table:notation}
 \end{table}
 
