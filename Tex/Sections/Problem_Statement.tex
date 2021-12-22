@@ -41,13 +41,22 @@ The linear discrete-time form of the time propagation model of eqn. (\ref{eqn:St
 	\Boldx_{k+1} &\doteq \BoldF \, \Boldx_k + \BoldGamma \, \Boldomega_k.
 \end{align}
 The linear representations of the measurement models of eqns. (\ref{eqn:DelayedMeasurement}) and (\ref{eqn:UndelayedMeasurement}) are
-\begin{align} \label{eqn:LinearDelayedMeasurement}
-	\Boldz_k &\doteq \BoldH_{k-N} \, \Boldx_{k-N} + \Boldb_{k-N} +\Boldzeta_k \\
+\begin{align}
 	\label{eqn:LinearUndelayedMeasurement}
-	\Boldy_k &\doteq \BoldC_k \, \Boldx_k + \Boldeta_k,
+	\Boldy_k &\doteq \BoldC_k \, \Boldx_k + \Boldeta_k, \\ \label{eqn:LinearDelayedMeasurement}
+	\Boldz_k &\doteq \BoldH_{k-N} \, \Boldx_{k-N} + \Boldb_{k-N} +\Boldzeta_k 
 \end{align}
-where $\BoldH_{k-N} \in \mathbb{R}^{m_d \times n}$ is the measurement matrix that relates the delayed measurement $\Boldz_{k}$ to the state at time $k-N$ (i.e., $\Boldx_{k-N}$) and 
-$\BoldC_k\in \mathbb{R}^{m_u \times n}$ is the measurement matrix that relates undelayed measurement $\Boldz_k$ to the state at time $k$ (i.e., $\Boldx_k$).
+where 
+$\BoldC_k\in \mathbb{R}^{m_u \times n}$ is the measurement matrix that relates undelayed measurement $\Boldy_k$ to the state at time $k$ (i.e., $\Boldx_k$)
+and
+$\BoldH_{k-N} \in \mathbb{R}^{m_d \times n}$ is the measurement matrix that relates the delayed measurement $\Boldz_{k}$ to the state at time $k-N$ (i.e., $\Boldx_{k-N}$).
+
+It is essential to know the value of the bias to mitigate its effect on the posterior estimate of the state. 
+Since it is not known prior to the estimation, the parameter\todo{Is $\Boldb$ constant or do we have a model for how it changes.} $\Boldb_k$ is estimated along with the state. 
+Let $\Boldxi_k$ represent the state of the system at time $k$.
+To simultaneously estimate the state and the bias the augmented state vector defined as 
+$\Boldx_k =	\big[\Boldxi_k^\top, ~\Boldb_k^\top \big]^\top$.
 
 The measurement update at time step $k$ relies on a  prior state estimate which is modeled as a Gaussian probability distribution $\Boldx_k \sim \mathcal{N}(\hat{\Boldx}_k^-,\BoldP_k^-)$, where the mean $\hat{\Boldx}_k^-$ and error covariance matrix $\BoldP_k^-$ are provided by the time propagation step.
+
 
