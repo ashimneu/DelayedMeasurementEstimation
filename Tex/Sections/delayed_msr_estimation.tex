@@ -5,10 +5,10 @@
 	\label{fig:delay_uncertainty}
 \end{figure}
 
-This section will describe the state estimation approach for the linear system in eqns. (\ref{eqn:LinearStateProp}) and (\ref{eqn:LinearUndelayedMeasurement}), along with time delayed measurements modelled in eqn. (\ref{eqn:LinearDelayedMeasurement}), which are corrupted by unknown bias $\Boldb_k$. 
-For the derivation of the approach described in this section the reader is advised to refer to Section IV in \cite{choi2012state}.
+This section will describe the state estimation approach for the linear system in eqns. (\ref{eqn:LinearStateProp}) and (\ref{eqn:LinearUndelayedMeasurement}), along with time delayed measurements modeled in eqn. (\ref{eqn:LinearDelayedMeasurement}), which are corrupted by unknown bias $\Boldb_k$. \todo{Is $\Boldb$ constant or do we have a model for how it changes.}
+For the derivation of the approach described in this section the reader is advised to refer to \red Section IV in \cite{choi2012state}.\black
 
-It is essential to know the value of bias to migitate its effect on the posterior estimate of the state. Since it's not known prior to the estmiation, $\Boldb_k$ is simultaneously estimated along with the state. 
+It is essential to know the value of bias to migitate its effect on the posterior estimate of the state. Since it's not known prior to the estimation, $\Boldb_k$ is simultaneously estimated along with the state. 
 Assume that state vector at time $k$ is represented by $\Boldxi_k$.
 The simultaneous estimation of the state \& the bias is achieved by performing estimation over an updated state vector defined as $\Boldx_k =	\big[\Boldxi_k^\top, \Boldb_k^\top \big]^\top$
 
